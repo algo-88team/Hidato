@@ -3,3 +3,7 @@
 //
 
 #include "Generator.h"
+
+Puzzle Generator::LoadFormFile() {
+    return Puzzle();
+}

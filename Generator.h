@@ -6,8 +6,11 @@
 #define HIDATO_GENERATOR_H
 
 
-class Generator {
+#include "Puzzle.h"
 
+class Generator {
+public:
+    Puzzle LoadFormFile();
 };
 
 
