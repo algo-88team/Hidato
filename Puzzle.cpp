@@ -2,6 +2,7 @@
 // Created by thdtj on 2018-11-21.
 //
 
+#include "Generator.h"
 #include "Puzzle.h"
 #include <string.h>
 
@@ -42,6 +43,9 @@ int *Puzzle::operator[](int i) {
 }
 
 Puzzle &Puzzle::operator=(const Puzzle &p) {
+    if (&p == this) {
+        return *this;
+    }
     if (mMap != nullptr) {
         for (int i = 0; i < mHeight + 2; ++i) {
             delete [] mMap[i];
@@ -95,4 +99,25 @@ std::ifstream &operator>>(std::ifstream &in, Puzzle &p) {
     }
 
     return in;
+}
+
+Puzzle &Puzzle::LoadFormFile(const char *name) {
+    if (mMap != nullptr) {
+        for (int i = 0; i < mHeight + 2; ++i) {
+            delete [] mMap[i];
+        }
+        delete [] mMap;
+    }
+
+    std::ifstream in;
+
+    in.open(name);
+    if (in.fail()) {
+        std::cerr << "file open error : " << name << std::endl;
+        return *this;
+    }
+
+    in >> *this;
+
+    return *this;
 }

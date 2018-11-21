@@ -4,6 +4,7 @@
 
 #include "Generator.h"
 
-Puzzle Generator::LoadFormFile(const char *name) {
-    return Puzzle();
+Puzzle &Generator::Generate(Puzzle &puzzle) {
+    return puzzle;
 }
+
