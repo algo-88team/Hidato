@@ -3,3 +3,8 @@
 //
 
 #include "Solver.h"
+
+Puzzle &Solver::solve(Puzzle &p) {
+    // TODO
+    return p;
+}

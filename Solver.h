@@ -5,9 +5,12 @@
 #ifndef HIDATO_SOLVER_H
 #define HIDATO_SOLVER_H
 
+#include "Puzzle.h"
+
 
 class Solver {
-
+public:
+    Puzzle &solve(Puzzle &p);
 };
 
 
