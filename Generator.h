@@ -10,7 +10,7 @@
 
 class Generator {
 public:
-    Puzzle LoadFormFile();
+    Puzzle LoadFormFile(const char *name);
 };
 
 
