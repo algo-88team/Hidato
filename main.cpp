@@ -13,10 +13,13 @@ int main() {
     Generator generator;
     Solver solver;
 
-    puzzle = generator.LoadFormFile("input.txt");
+    puzzle.LoadFormFile("input.txt");
+
+    std::cout << "Input puzzle" << std::endl;
+    std::cout << puzzle << std::endl;
 
     std::cout << "Generated puzzle" << std::endl;
-    std::cout << puzzle << std::endl << std::endl;
+    std::cout << generator.Generate(puzzle) << std::endl;
 
     std::cout << "Solved puzzle" << std::endl;
     std::cout << solver.Solve(puzzle) << std::endl;

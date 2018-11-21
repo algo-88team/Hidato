@@ -24,6 +24,8 @@ public:
     friend std::ostream& operator<<(std::ostream &o, const Puzzle &p);
     friend std::ifstream& operator>>(std::ifstream& o, Puzzle &p);
 
+    Puzzle &LoadFormFile(const char *name);
+
 private:
     int mWidth;
     int mHeight;
