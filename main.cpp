@@ -19,7 +19,7 @@ int main() {
     std::cout << puzzle << std::endl << std::endl;
 
     std::cout << "Solved puzzle" << std::endl;
-    std::cout << solver.solve(puzzle) << std::endl;
+    std::cout << solver.Solve(puzzle) << std::endl;
 
     return 0;
 }

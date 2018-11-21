@@ -10,7 +10,7 @@
 
 class Solver {
 public:
-    Puzzle &solve(Puzzle &p);
+    Puzzle &Solve(Puzzle &p);
 };
 
 

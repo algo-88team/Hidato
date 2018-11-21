@@ -4,7 +4,7 @@
 
 #include "Solver.h"
 
-Puzzle &Solver::solve(Puzzle &p) {
+Puzzle &Solver::Solve(Puzzle &p) {
     // TODO
     return p;
 }
