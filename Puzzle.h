@@ -21,8 +21,8 @@ public:
 
     Puzzle &operator =(const Puzzle &p);
 
-    friend std::ostream& operator <<(std::ostream& o, Puzzle p);
-    friend std::ifstream& operator >>(std::ifstream& o, Puzzle p);
+    friend std::ostream& operator<<(std::ostream &o, const Puzzle &p);
+    friend std::ifstream& operator>>(std::ifstream& o, Puzzle &p);
 
 private:
     int mWidth;
