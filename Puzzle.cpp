@@ -5,9 +5,9 @@
 #include "Puzzle.h"
 #include <string.h>
 
-Puzzle::Puzzle() = default;
+Puzzle::Puzzle() : mWidth(0), mHeight(0), mMap(nullptr) {};
 
-Puzzle::Puzzle(int width, int height) : mWidth(width), mHeight(height) {
+Puzzle::Puzzle(int width, int height) : mWidth(width), mHeight(height), mMap(nullptr) {
     mMap = new int *[height + 2];
 
     for (int i = 0; i < height + 2; ++i) {
@@ -57,6 +57,11 @@ Puzzle &Puzzle::operator=(const Puzzle &p) {
     mWidth = width;
     mHeight = height;
 
+    if (width == 0 || height == 0 || p.mMap == nullptr) {
+        mMap = nullptr;
+        return *this;
+    }
+
     mMap = new int *[height + 2];
 
     for (int i = 0; i < height + 2; ++i) {
@@ -67,7 +72,7 @@ Puzzle &Puzzle::operator=(const Puzzle &p) {
     return *this;
 }
 
-std::ostream &operator<<(std::ostream &o, const Puzzle p) {
+std::ostream &operator<<(std::ostream &o, const Puzzle &p) {
     for (int i = 0; i < p.mHeight; ++i) {
         for (int j = 0; j < p.mWidth; ++j) {
             o << p[i][j] << " ";
@@ -77,12 +82,9 @@ std::ostream &operator<<(std::ostream &o, const Puzzle p) {
     return o;
 }
 
-std::ifstream &operator>>(std::ifstream &in, Puzzle p) {
+std::ifstream &operator>>(std::ifstream &in, Puzzle &p) {
     int width, height;
     in >> width >> height;
-
-    p.mWidth = width;
-    p.mHeight = height;
 
     p = Puzzle(width, height);
 
