@@ -95,7 +95,7 @@ std::ostream &operator<<(std::ostream &o, const Puzzle &p) {
     return o;
 }
 
-std::ifstream &operator>>(std::ifstream &in, Puzzle &p) {
+std::istream &operator>>(std::istream &in, Puzzle &p) {
     int width, height;
     in >> width >> height;
 
