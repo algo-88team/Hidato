@@ -12,17 +12,20 @@
 class Puzzle {
 public:
     Puzzle();
+
     Puzzle(int width, int height);
 
     virtual ~Puzzle();
 
-    int *operator [](int i) const;
-    int *operator [](int i);
+    int *operator[](int i) const;
 
-    Puzzle &operator =(const Puzzle &p);
+    int *operator[](int i);
 
-    friend std::ostream& operator<<(std::ostream &o, const Puzzle &p);
-    friend std::ifstream& operator>>(std::ifstream& o, Puzzle &p);
+    Puzzle &operator=(const Puzzle &p);
+
+    friend std::ostream &operator<<(std::ostream &o, const Puzzle &p);
+
+    friend std::istream &operator>>(std::istream &o, Puzzle &p);
 
     Puzzle &LoadFormFile(const char *name);
 

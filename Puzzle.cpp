@@ -28,9 +28,9 @@ Puzzle::Puzzle(int width, int height) : mWidth(width), mHeight(height), mMap(nul
 Puzzle::~Puzzle() {
     if (mMap != nullptr) {
         for (int i = 0; i < mHeight + 2; ++i) {
-            delete [] mMap[i];
+            delete[] mMap[i];
         }
-        delete [] mMap;
+        delete[] mMap;
     }
 }
 
@@ -48,9 +48,9 @@ Puzzle &Puzzle::operator=(const Puzzle &p) {
     }
     if (mMap != nullptr) {
         for (int i = 0; i < mHeight + 2; ++i) {
-            delete [] mMap[i];
+            delete[] mMap[i];
         }
-        delete [] mMap;
+        delete[] mMap;
     }
 
     int width, height;
@@ -95,7 +95,7 @@ std::ostream &operator<<(std::ostream &o, const Puzzle &p) {
     return o;
 }
 
-std::ifstream &operator>>(std::ifstream &in, Puzzle &p) {
+std::istream &operator>>(std::istream &in, Puzzle &p) {
     int width, height;
     in >> width >> height;
 
@@ -113,9 +113,9 @@ std::ifstream &operator>>(std::ifstream &in, Puzzle &p) {
 Puzzle &Puzzle::LoadFormFile(const char *name) {
     if (mMap != nullptr) {
         for (int i = 0; i < mHeight + 2; ++i) {
-            delete [] mMap[i];
+            delete[] mMap[i];
         }
-        delete [] mMap;
+        delete[] mMap;
     }
 
     std::ifstream in;
