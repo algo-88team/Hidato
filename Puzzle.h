@@ -29,10 +29,14 @@ public:
 
     Puzzle &LoadFormFile(const char *name);
 
+    int getWidth() const;
+
+    int getHeight() const;
+
 private:
-    int mWidth;
-    int mHeight;
-    int **mMap;
+    int width;
+    int height;
+    int **map;
 };
 
 #endif //HIDATO_PUZZLE_H
