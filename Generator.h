@@ -7,10 +7,13 @@
 
 
 #include "Puzzle.h"
+#include <cstdlib> // for srand
+#include <ctime>   // for srand
 
 class Generator {
 public:
     Puzzle &Generate(Puzzle &puzzle);
+    Puzzle &Recursive(Puzzle &puzzle,int x,int y,int count);
 };
 
 
