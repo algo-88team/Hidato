@@ -8,7 +8,6 @@
 #include <iostream>
 #include <fstream>
 
-
 class Puzzle {
 public:
     Puzzle();
@@ -33,9 +32,12 @@ public:
 
     int getHeight() const;
 
+    int getSize() const;
+
 private:
     int width;
     int height;
+    int size = 0;
     int **map;
 };
 
