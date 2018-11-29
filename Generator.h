@@ -11,7 +11,9 @@
 #include <ctime>   // for srand
 
 class Generator {
+private:
 public:
+    int *InitPoint(Puzzle &puzzle);
     Puzzle &Generate(Puzzle &puzzle);
     Puzzle &Recursive(Puzzle &puzzle,int x,int y,int count);
 };
