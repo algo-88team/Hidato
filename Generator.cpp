@@ -17,6 +17,23 @@ Puzzle &Generator::Generate(Puzzle &puzzle) {
 
     //  Fill puzzle
     Fill(puzzle, graph);
+
+    //  Check puzzle
+    int checker = 0;
+    for (int i = 0; i < height; ++i) {
+        for (int j = 0; j < width; ++j) {
+            checker ^= puzzle[i][j];
+        }
+    }
+    for (int n = 1; n < numCells + 1; ++n) {
+        checker ^= n;
+    }
+    if (checker) {
+        std::cout << "Fill failed." << std::endl;
+        return puzzle;
+    }
+
+
     return puzzle;
 }
 
