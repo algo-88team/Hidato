@@ -42,6 +42,14 @@ int *Puzzle::operator[](int i) {
     return map[i + 1] + 1;
 }
 
+int Puzzle::operator[](const Point &p) const {
+    return map[p.y+1][p.x+1];
+}
+
+int &Puzzle::operator[](const Point &p) {
+    return map[p.y+1][p.x+1];
+}
+
 Puzzle &Puzzle::operator=(const Puzzle &p) {
     if (&p == this) {
         return *this;
