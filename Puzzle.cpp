@@ -24,6 +24,25 @@ Puzzle::Puzzle(int width, int height) : width(width), height(height), map(nullpt
     }
 }
 
+Puzzle::Puzzle(const Puzzle &p) {
+    width = p.width;
+    height = p.height;
+    numCells = p.numCells;
+    numEmptyCells = p.numEmptyCells;
+
+    if (width == 0 || height == 0 || p.map == nullptr) {
+        map = nullptr;
+        return;
+    }
+
+    map = new int *[height + 2];
+
+    for (int i = 0; i < height + 2; ++i) {
+        map[i] = new int[width + 2];
+        memcpy(map[i], p.map[i], (width + 2) * sizeof(int));
+    }
+}
+
 
 Puzzle::~Puzzle() {
     if (map != nullptr) {
@@ -166,3 +185,5 @@ void Puzzle::setNumCells(int numCells) {
 void Puzzle::setNumEmptyCells(int numEmptyCells) {
     Puzzle::numEmptyCells = numEmptyCells;
 }
+
+Point::Point(int x, int y) : x(x), y(y) {}
