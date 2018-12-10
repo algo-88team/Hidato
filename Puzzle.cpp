@@ -99,10 +99,6 @@ std::istream &operator>>(std::istream &in, Puzzle &p) {
     for (int i = 0; i < height; ++i) {
         for (int j = 0; j < width; ++j) {
             in >> p[i][j];
-            if(p[i][j]==1){
-                p[i][j] = -1;     //1중복 문제 -> 1 -> -1 로 변경
-                p.size ++;
-            }
         }
     }
 
@@ -136,8 +132,4 @@ int Puzzle::getWidth() const {
 
 int Puzzle::getHeight() const {
     return height;
-}
-
-int Puzzle::getSize() const {
-    return size;
 }
