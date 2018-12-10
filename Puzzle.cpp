@@ -6,7 +6,7 @@
 #include "Puzzle.h"
 #include <string.h>
 
-Puzzle::Puzzle() : width(0), height(0), map(nullptr, numCells(0), numEmptyCells(0) {};
+Puzzle::Puzzle() : width(0), height(0), map(nullptr), numCells(0), numEmptyCells(0) {};
 
 Puzzle::Puzzle(int width, int height) : width(width), height(height), map(nullptr), numCells(0), numEmptyCells(0) {
     map = new int *[height + 2];
