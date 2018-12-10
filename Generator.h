@@ -7,10 +7,19 @@
 
 
 #include "Puzzle.h"
+#include "CellGraph.h"
 
 class Generator {
 public:
     Puzzle &Generate(Puzzle &puzzle);
+
+private:
+    int width;
+    int height;
+    int numCells;
+
+    void Invert(Puzzle &puzzle);
+    Puzzle *Fill(Puzzle puzzle, CellGraph graph);
 };
 
 
