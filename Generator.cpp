@@ -9,9 +9,8 @@ Puzzle &Generator::Generate(Puzzle &puzzle) {
     int *p = InitPoint(puzzle); //find first location[0]
 
     std::cout << p[0]<<p[1]<<std::endl;
-
-    int count = 1;
-    Recursive(puzzle,p[0],p[1],count);
+    //int count = 1;
+    //Recursive(puzzle,p[0],p[1],count);
 
 
     return puzzle;
@@ -33,23 +32,12 @@ int *Generator::InitPoint(Puzzle &puzzle){
     return pa;
 }
 Puzzle &Generator::Recursive(Puzzle &puzzle,int x,int y,int count) {
-    puzzle[x][y] = count;
-    count++;
-    //std::cout << puzzle;
-    if(count == puzzle.getSize())
+    //std::cout << x << " "<< y <<" "<< count << std::endl;
+    if (count == puzzle.getSize())  {// 모든 칸이 채워지면 퍼즐 출력
+        std::cout << "complete create puzzle" << std::endl;
         return puzzle;
-    if(puzzle[x][y+1] == -1) return Recursive(puzzle, x, y + 1, count);          // ↑
-    else if(puzzle[x+1][y+1] == -1) return Recursive(puzzle, x + 1, y + 1, count);  // ↗
-    else if(puzzle[x+1][y] == -1) return Recursive(puzzle, x + 1, y, count);    // →
-    else if(puzzle[x+1][y-1] == -1) return Recursive(puzzle, x + 1, y - 1, count);  // ↘
-    else if(puzzle[x][y-1] == -1) return Recursive(puzzle, x, y - 1, count);    // ↓
-    else if(puzzle[x-1][y-1] == -1) return Recursive(puzzle, x - 1, y - 1, count);  // ↙
-    else if(puzzle[x-1][y] == -1) return Recursive(puzzle, x - 1, y, count);    // ←
-    else if(puzzle[x-1][y+1] == -1) return Recursive(puzzle, x - 1, y + 1, count);    // ↖
-
-
-
-    /*else if (puzzle[x][y] == -1) {
+    }
+    else if (puzzle[x][y] == -1) {
         puzzle[x][y] = count;
         count++;
 
@@ -61,6 +49,6 @@ Puzzle &Generator::Recursive(Puzzle &puzzle,int x,int y,int count) {
         Recursive(puzzle, x - 1, y - 1, count);  // ↙
         Recursive(puzzle, x - 1, y, count);    // ←
         Recursive(puzzle, x - 1, y + 1, count);    // ↖
-    }*/
+    }
 
 }
