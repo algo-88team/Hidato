@@ -8,6 +8,32 @@
 #include <iostream>
 #include <fstream>
 
+class Point {
+public:
+    Point() = default;
+
+    explicit Point(int x, int y) : x(x), y(y) {};
+
+    Point(const Point &p) = default;;
+
+    virtual ~Point() = default;
+
+    Point operator+(Point p) {
+        return Point(x + p.x, y + p.y);
+    }
+
+    bool operator==(const Point &rhs) const {
+        return x == rhs.x &&
+               y == rhs.y;
+    }
+
+    bool operator!=(const Point &rhs) const {
+        return !(rhs == *this);
+    }
+
+    int x;
+    int y;
+};
 
 class Puzzle {
 public:
@@ -20,6 +46,10 @@ public:
     int *operator[](int i) const;
 
     int *operator[](int i);
+
+    int operator[](const Point &p) const;
+
+    int &operator[](const Point &p);
 
     Puzzle &operator=(const Puzzle &p);
 
