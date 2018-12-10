@@ -12,11 +12,7 @@ class Point {
 public:
     Point() = default;
 
-    explicit Point(int x, int y) : x(x), y(y) {};
-
-    Point(const Point &p) = default;;
-
-    virtual ~Point() = default;
+    Point(int x, int y);
 
     Point operator+(Point p) {
         return Point(x + p.x, y + p.y);
@@ -40,6 +36,8 @@ public:
     Puzzle();
 
     Puzzle(int width, int height);
+
+    Puzzle(const Puzzle &p);
 
     virtual ~Puzzle();
 

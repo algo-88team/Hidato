@@ -5,6 +5,7 @@
 #include "Generator.h"
 #include "Puzzle.h"
 #include <string.h>
+#include <iomanip>
 
 Puzzle::Puzzle() : width(0), height(0), map(nullptr), numCells(0), numEmptyCells(0) {};
 
@@ -21,6 +22,25 @@ Puzzle::Puzzle(int width, int height) : width(width), height(height), map(nullpt
     for (int i = 1; i < height + 1; ++i) {
         map[i][0] = 0;
         map[i][width + 1] = 0;
+    }
+}
+
+Puzzle::Puzzle(const Puzzle &p) {
+    width = p.width;
+    height = p.height;
+    numCells = p.numCells;
+    numEmptyCells = p.numEmptyCells;
+
+    if (width == 0 || height == 0 || p.map == nullptr) {
+        map = nullptr;
+        return;
+    }
+
+    map = new int *[height + 2];
+
+    for (int i = 0; i < height + 2; ++i) {
+        map[i] = new int[width + 2];
+        memcpy(map[i], p.map[i], (width + 2) * sizeof(int));
     }
 }
 
@@ -93,7 +113,7 @@ std::ostream &operator<<(std::ostream &o, const Puzzle &p) {
 #else
     for (int i = 0; i < p.height; ++i) {
         for (int j = 0; j < p.width; ++j) {
-            o << p[i][j] << " ";
+            o << std::setw(4) << p[i][j] << " ";
         }
         o << std::endl;
     }
@@ -166,3 +186,5 @@ void Puzzle::setNumCells(int numCells) {
 void Puzzle::setNumEmptyCells(int numEmptyCells) {
     Puzzle::numEmptyCells = numEmptyCells;
 }
+
+Point::Point(int x, int y) : x(x), y(y) {}
