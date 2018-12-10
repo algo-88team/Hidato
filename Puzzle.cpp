@@ -5,6 +5,7 @@
 #include "Generator.h"
 #include "Puzzle.h"
 #include <string.h>
+#include <iomanip>
 
 Puzzle::Puzzle() : width(0), height(0), map(nullptr), numCells(0), numEmptyCells(0) {};
 
@@ -112,7 +113,7 @@ std::ostream &operator<<(std::ostream &o, const Puzzle &p) {
 #else
     for (int i = 0; i < p.height; ++i) {
         for (int j = 0; j < p.width; ++j) {
-            o << p[i][j] << " ";
+            o << std::setw(4) << p[i][j] << " ";
         }
         o << std::endl;
     }
