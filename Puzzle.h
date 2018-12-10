@@ -33,10 +33,20 @@ public:
 
     int getHeight() const;
 
+    int getNumCells() const;
+
+    int getNumEmptyCells() const;
+
+    void setNumCells(int numCells);
+
+    void setNumEmptyCells(int numEmptyCells);
+
 private:
     int width;
     int height;
     int **map;
+    int numCells;
+    int numEmptyCells;
 };
 
 #endif //HIDATO_PUZZLE_H

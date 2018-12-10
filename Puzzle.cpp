@@ -6,9 +6,9 @@
 #include "Puzzle.h"
 #include <string.h>
 
-Puzzle::Puzzle() : width(0), height(0), map(nullptr) {};
+Puzzle::Puzzle() : width(0), height(0), map(nullptr, numCells(0), numEmptyCells(0) {};
 
-Puzzle::Puzzle(int width, int height) : width(width), height(height), map(nullptr) {
+Puzzle::Puzzle(int width, int height) : width(width), height(height), map(nullptr), numCells(0), numEmptyCells(0) {
     map = new int *[height + 2];
 
     for (int i = 0; i < height + 2; ++i) {
@@ -46,6 +46,7 @@ Puzzle &Puzzle::operator=(const Puzzle &p) {
     if (&p == this) {
         return *this;
     }
+
     if (map != nullptr) {
         for (int i = 0; i < height + 2; ++i) {
             delete[] map[i];
@@ -55,6 +56,8 @@ Puzzle &Puzzle::operator=(const Puzzle &p) {
 
     width = p.width;
     height = p.height;
+    numCells = p.numCells;
+    numEmptyCells = p.numEmptyCells;
 
     if (width == 0 || height == 0 || p.map == nullptr) {
         map = nullptr;
@@ -99,6 +102,12 @@ std::istream &operator>>(std::istream &in, Puzzle &p) {
     for (int i = 0; i < height; ++i) {
         for (int j = 0; j < width; ++j) {
             in >> p[i][j];
+            if (p[i][j]) {
+                ++p.numCells;
+                if (p[i][j] < 0) {
+                    ++p.numEmptyCells;
+                }
+            }
         }
     }
 
@@ -132,4 +141,20 @@ int Puzzle::getWidth() const {
 
 int Puzzle::getHeight() const {
     return height;
+}
+
+int Puzzle::getNumCells() const {
+    return numCells;
+}
+
+int Puzzle::getNumEmptyCells() const {
+    return numEmptyCells;
+}
+
+void Puzzle::setNumCells(int numCells) {
+    Puzzle::numCells = numCells;
+}
+
+void Puzzle::setNumEmptyCells(int numEmptyCells) {
+    Puzzle::numEmptyCells = numEmptyCells;
 }
