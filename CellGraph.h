@@ -71,6 +71,8 @@ public:
 
     void eraseRemainder(int n, Cell* pC);
 
+    bool CheckMapping();
+
 private:
     int width;
     int height;

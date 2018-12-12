@@ -245,5 +245,22 @@ void CellGraph::eraseRemainder(int n, Cell *pC) {
     remainders.find(n)->second.erase(pC);
 }
 
+bool CellGraph::CheckMapping() {
+    for (auto &cell : cells) {
+        if (cell != (*this)[cell->getPos()]) {
+            std::cerr << "Error : cells mapping was broken. " << cell->getPos() << std::endl;
+            return false;
+        }
+    }
 
+    for (auto &remainder : remainders) {
+        for (auto &iter : remainder.second) {
+            if (iter != (*this)[iter->getPos()]) {
+                std::cerr << "Error : remainders mapping was broken. " << iter->getPos() << std::endl;
+                return false;
+            }
+        }
+    }
+
+    return true;
 }
