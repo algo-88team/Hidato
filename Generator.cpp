@@ -66,19 +66,59 @@ void Generator::Invert(Puzzle &puzzle) {
     puzzle.setNumEmptyCells(puzzle.getNumCells());
 }
 
-Puzzle *Generator::Fill(Puzzle puzzle, CellGraph graph, const Cell &cell) {
-    Update(puzzle, graph, cell);
+Puzzle *Generator::Fill(Puzzle puzzle, CellGraph graph, const Cell cell) {
+    if (!Update(puzzle, graph, cell)) {
+        return nullptr;
+    }
 
-    return nullptr;
+    if (graph.is_finished()) {
+        return new Puzzle(puzzle);
+    }
+
+    Puzzle *result;
+    do {
+        Cell *randCell = graph.getNextRandCell();
+
+        if (randCell == nullptr) {
+//            std::cout << "There are no way " << graph.getRemaindersSetSize() << std::endl;
+            return nullptr;
+        }
+
+        int n = randCell->getData();
+
+        result = Fill(puzzle, graph, *randCell);
+
+        if (result == nullptr) {
+            randCell->eraseCandidate(n);
+            graph.eraseRemainder(n, randCell);
+            randCell->setData(-1);
+        }
+    } while (result == nullptr);
+
+    return result;
 }
 
-bool Generator::Update(Puzzle &puzzle, CellGraph &graph, const Cell &cell) {
+bool Generator::Update(Puzzle &puzzle, CellGraph &graph, const Cell cell) {
     puzzle[cell.getPos()] = cell.getData();
     graph.eraseCell(graph[cell.getPos()]);
     graph.checkNeighbor(cell);
 
+    if (graph.is_finished()) {
+        return true;
+    }
 
+    if (!graph.checkMapping() || !graph.is_candidatesEmpty() || !graph.is_remaindersEmpty()) {
+        return false;
+    }
 
-    return false;
+    Cell *pCell = graph.find_onlyCandidate();
+    if (pCell == nullptr) {
+        pCell = graph.find_onlyRemainder();
+        if (pCell == nullptr) {
+            return true;
+        }
+    }
+
+    return Update(puzzle, graph, *pCell);
 }
 

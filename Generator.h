@@ -21,9 +21,9 @@ private:
 
     void Invert(Puzzle &puzzle);
 
-    Puzzle *Fill(Puzzle puzzle, CellGraph graph, const Cell &cell);
+    Puzzle *Fill(Puzzle puzzle, CellGraph graph, const Cell cell);
 
-    bool Update(Puzzle &puzzle, CellGraph &graph, const Cell &cell);
+    bool Update(Puzzle &puzzle, CellGraph &graph, const Cell cell);
 };
 
 
