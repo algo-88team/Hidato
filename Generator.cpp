@@ -3,6 +3,7 @@
 //
 
 #include "Generator.h"
+#include "Cell.h"
 
 Puzzle &Generator::Generate(Puzzle &puzzle) {
     width = puzzle.getWidth();

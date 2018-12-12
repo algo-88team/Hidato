@@ -10,42 +10,7 @@
 #include <map>
 
 #include "Puzzle.h"
-
-class Cell {
-public:
-    Cell() = default;
-
-    Cell(int data, const Point &p) : data(data), pos(p) {}
-
-    Cell(int data, int x, int y) : data(data), pos(x, y) {}
-
-    Cell(const Cell &c) = default;
-
-    virtual ~Cell();
-
-    int getData() const;
-
-    void setData(int data);
-
-    const Point &getPos() const;
-
-    Cell &operator=(const Cell &c);
-
-    void insertCandidate(int n);
-
-    void eraseCandidate(int n);
-
-    bool is_Neighbor(int x, int y);
-
-    bool is_Neighbor(const Point &p);
-
-    bool is_Neighbor(const Cell &c);
-
-private:
-    int data;
-    Point pos;
-    std::set<int> candidates;
-};
+#include "Cell.h"
 
 class CellGraph {
 public:
