@@ -65,9 +65,9 @@ CellGraph::CellGraph(const Puzzle &puzzle) {
         }
     }
 
-    //  Initialize remainders
+    //  Initialize remaindersSet
     for (int n = 1; n < puzzle.getNumCells() + 1; ++n) {
-        remainders.insert(std::pair<int, std::set<Cell *>>(n, std::set<Cell *>()));
+        remaindersSet.insert(std::pair<int, std::set<Cell *>>(n, std::set<Cell *>()));
     }
 
     //  Create Cells
@@ -79,30 +79,43 @@ CellGraph::CellGraph(const Puzzle &puzzle) {
                 p = new Cell(value, j, i);
                 cells.emplace_back(p);
 
-                for (auto &remainder : remainders) {
-                    remainder.second.insert(p);
-                    p->insertCandidate(remainder.first);
+                for (auto &remainders : remaindersSet) {
+                    remainders.second.insert(p);
+                    p->insertCandidate(remainders.first);
                 }
             } else if (value > 0) {
-                auto &remainder = remainders.find(value)->second;
-                remainder.clear();
-                std::set<Cell *>().swap(remainder);
-                remainders.erase(value);
+                auto &remainders = remaindersSet.find(value)->second;
+                remainders.clear();
+                std::set<Cell *>().swap(remainders);
+                remaindersSet.erase(value);
 
                 int prevValue = value - 1;
                 int nextValue = value + 1;
 
-                auto &prevCells = remainders.find(prevValue)->second;
-                for (auto &prevCell : prevCells) {
-                    if (!prevCell->is_Neighbor(j, i)) {
-                        prevCell->eraseCandidate(prevValue);
+                auto iter = remaindersSet.find(prevValue);
+                if (iter != remaindersSet.end()) {
+                    auto &prevRemainders = iter->second;
+                    for (auto prevRemainder = prevRemainders.begin(); prevRemainder != prevRemainders.end();) {
+                        if (!prevRemainder.operator*()->is_Neighbor(j, i)) {
+                            prevRemainder.operator*()->eraseCandidate(prevValue);
+                            prevRemainder = prevRemainders.erase(prevRemainder);
+                        } else {
+                            ++prevRemainder;
+                        }
                     }
+
                 }
 
-                auto &nextCells = remainders.find(nextValue)->second;
-                for (auto &nextCell : nextCells) {
-                    if (!nextCell->is_Neighbor(j, i)) {
-                        nextCell->eraseCandidate(nextValue);
+                iter = remaindersSet.find(nextValue);
+                if (iter != remaindersSet.end()) {
+                    auto &nextRemainders = iter->second;
+                    for (auto nextRemainder = nextRemainders.begin(); nextRemainder != nextRemainders.end();) {
+                        if (!nextRemainder.operator*()->is_Neighbor(j, i)) {
+                            nextRemainder.operator*()->eraseCandidate(nextValue);
+                            nextRemainder = nextRemainders.erase(nextRemainder);
+                        } else {
+                            ++nextRemainder;
+                        }
                     }
                 }
 
@@ -111,7 +124,7 @@ CellGraph::CellGraph(const Puzzle &puzzle) {
     }
 }
 
-CellGraph::CellGraph(const CellGraph &cg) : width(cg.width), height(cg.height), cells(cg.cells) {
+CellGraph::CellGraph(const CellGraph &cg) : width(cg.width), height(cg.height) {
 
     //  Allocate map
     map = new Cell **[height + 2];
@@ -123,15 +136,16 @@ CellGraph::CellGraph(const CellGraph &cg) : width(cg.width), height(cg.height), 
     }
 
     //  Mapping cells
-    for (auto &cell : cells) {
-        cell = (*this)[cell->getPos()];
+    for (auto &cgCell : cg.cells) {
+        cells.emplace_back((*this)[cgCell->getPos()]);
     }
 
-    //  Mapping remainders
-    for (auto &cgRemainder : cg.remainders) {
-        std::pair<std::map<int, std::set<Cell *>>::iterator, bool> remainder = remainders.insert(std::pair<int, std::set<Cell *>>(cgRemainder.first, std::set<Cell *>()));
-        for (auto &iter : cgRemainder.second) {
-            remainder.first->second.insert((*this)[iter->getPos()]);
+    //  Mapping remaindersSet
+    for (auto &cgRemainders : cg.remaindersSet) {
+        std::pair<std::map<int, std::set<Cell *>>::iterator, bool> remainders = remaindersSet.insert(
+                std::pair<int, std::set<Cell *>>(cgRemainders.first, std::set<Cell *>()));
+        for (auto &cgRemainder : cgRemainders.second) {
+            remainders.first->second.insert((*this)[cgRemainder->getPos()]);
         }
     }
 }
@@ -140,12 +154,12 @@ CellGraph::~CellGraph() {
     cells.clear();
     std::vector<Cell *>().swap(cells);
 
-    for (auto &remainder : remainders) {
-        remainder.second.clear();
-        std::set<Cell *>().swap(remainder.second);
+    for (auto &remainders : remaindersSet) {
+        remainders.second.clear();
+        std::set<Cell *>().swap(remainders.second);
     }
-    remainders.clear();
-    std::map<int, std::set<Cell *>>().swap(remainders);
+    remaindersSet.clear();
+    std::map<int, std::set<Cell *>>().swap(remaindersSet);
 
     if (map != nullptr) {
         for (int i = 0; i < height + 2; ++i) {
@@ -179,11 +193,11 @@ Cell *&CellGraph::operator[](const Point &p) {
 CellGraph &CellGraph::operator=(const CellGraph &cg) {
     cells.clear();
 
-    for (auto &remainder : remainders) {
-        remainder.second.clear();
-        std::set<Cell *>().swap(remainder.second);
+    for (auto &remainders : remaindersSet) {
+        remainders.second.clear();
+        std::set<Cell *>().swap(remainders.second);
     }
-    remainders.clear();
+    remaindersSet.clear();
 
     if (map != nullptr) {
         for (int i = 0; i < height + 2; ++i) {
@@ -216,11 +230,12 @@ CellGraph &CellGraph::operator=(const CellGraph &cg) {
         cell = (*this)[cell->getPos()];
     }
 
-    //  Mapping remainders
-    for (auto &cgRemainder : cg.remainders) {
-        std::pair<std::map<int, std::set<Cell *>>::iterator, bool> remainder = remainders.insert(std::pair<int, std::set<Cell *>>(cgRemainder.first, std::set<Cell *>()));
-        for (auto &iter : cgRemainder.second) {
-            remainder.first->second.insert((*this)[iter->getPos()]);
+    //  Mapping remaindersSet
+    for (auto &cgRemainders : cg.remaindersSet) {
+        std::pair<std::map<int, std::set<Cell *>>::iterator, bool> remainders = remaindersSet.insert(
+                std::pair<int, std::set<Cell *>>(cgRemainders.first, std::set<Cell *>()));
+        for (auto &cgRemainder : cgRemainders.second) {
+            remainders.first->second.insert((*this)[cgRemainder->getPos()]);
         }
     }
 
@@ -229,23 +244,89 @@ CellGraph &CellGraph::operator=(const CellGraph &cg) {
 
 Cell *CellGraph::RandCell(int n) const {
     srand(static_cast<unsigned int>(time(nullptr)));
-    auto &nRemainders = remainders.find(n)->second;
-    if (nRemainders.empty()) {
+    auto &remainders = remaindersSet.find(n)->second;
+    if (remainders.empty()) {
         return nullptr;
     }
-    unsigned long idx = rand() % nRemainders.size();
-    auto iter = nRemainders.begin();
+    unsigned long idx = rand() % remainders.size();
+    auto remainder = remainders.begin();
     for (int i = 0; i < idx; ++i) {
-        ++iter;
+        ++remainder;
     }
-    return *iter;
+    return *remainder;
 }
 
-void CellGraph::eraseRemainder(int n, Cell *pC) {
-    remainders.find(n)->second.erase(pC);
+void CellGraph::eraseRemainder(int n, Cell *pCell) {
+    remaindersSet.find(n)->second.erase(pCell);
+    pCell->eraseCandidate(n);
 }
 
-bool CellGraph::CheckMapping() {
+void CellGraph::eraseRemainders(int n) {
+    auto iter = remaindersSet.find(n);
+    if (iter == remaindersSet.end()) {
+        return;
+    }
+    auto &remainders = iter->second;
+    for (auto &remainder : remainders) {
+        remainder->eraseCandidate(n);
+    }
+    remainders.clear();
+    std::set<Cell *>().swap(remainders);
+    remaindersSet.erase(iter);
+}
+
+void CellGraph::eraseCell(Cell *pCell) {
+    eraseRemainders(pCell->getData());
+
+    for (auto &remainders : remaindersSet) {
+        remainders.second.erase(pCell);
+    }
+
+    for (auto iter = cells.begin(); iter != cells.end(); ++iter) {
+        if (*iter == pCell) {
+            cells.erase(iter);
+            break;
+        }
+    }
+
+    (*this)[pCell->getPos()] = nullptr;
+    delete pCell;
+}
+
+void CellGraph::checkNeighbor(const Cell &c) {
+    int value = c.getData();
+    int prevValue = value - 1;
+    int nextValue = value + 1;
+
+    auto iter = remaindersSet.find(prevValue);
+    if (iter != remaindersSet.end()) {
+        auto &prevRemainders = iter->second;
+        for (auto prevRemainder = prevRemainders.begin(); prevRemainder != prevRemainders.end();) {
+            if (!prevRemainder.operator*()->is_Neighbor(c)) {
+                prevRemainder.operator*()->eraseCandidate(prevValue);
+                prevRemainder = prevRemainders.erase(prevRemainder);
+            } else {
+                ++prevRemainder;
+            }
+        }
+
+    }
+
+    iter = remaindersSet.find(nextValue);
+    if (iter != remaindersSet.end()) {
+        auto &nextRemainders = iter->second;
+        for (auto nextRemainder = nextRemainders.begin(); nextRemainder != nextRemainders.end();) {
+            if (!nextRemainder.operator*()->is_Neighbor(c)) {
+                nextRemainder.operator*()->eraseCandidate(nextValue);
+                nextRemainder = nextRemainders.erase(nextRemainder);
+            } else {
+                ++nextRemainder;
+            }
+        }
+    }
+}
+
+bool CellGraph::checkMapping() {
     for (auto &cell : cells) {
         if (cell != (*this)[cell->getPos()]) {
             std::cerr << "Error : cells mapping was broken. " << cell->getPos() << std::endl;
@@ -253,10 +334,10 @@ bool CellGraph::CheckMapping() {
         }
     }
 
-    for (auto &remainder : remainders) {
-        for (auto &iter : remainder.second) {
-            if (iter != (*this)[iter->getPos()]) {
-                std::cerr << "Error : remainders mapping was broken. " << iter->getPos() << std::endl;
+    for (auto &remainders : remaindersSet) {
+        for (auto &remainder : remainders.second) {
+            if (remainder != (*this)[remainder->getPos()]) {
+                std::cerr << "Error : remaindersSet mapping was broken. " << remainder->getPos() << std::endl;
                 return false;
             }
         }

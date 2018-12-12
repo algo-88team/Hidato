@@ -69,9 +69,15 @@ public:
 
     Cell *RandCell(int n) const;
 
-    void eraseRemainder(int n, Cell* pC);
+    void eraseRemainder(int n, Cell *pCell);
 
-    bool CheckMapping();
+    void eraseRemainders(int n);
+
+    void eraseCell(Cell *pCell);
+
+    void checkNeighbor(const Cell &c);
+
+    bool checkMapping();
 
 private:
     int width;
@@ -79,7 +85,7 @@ private:
 
     Cell ***map;
     std::vector<Cell *> cells;
-    std::map<int, std::set<Cell *>> remainders;
+    std::map<int, std::set<Cell *>> remaindersSet;
 };
 
 
