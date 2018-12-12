@@ -161,11 +161,11 @@ CellGraph::~CellGraph() {
 }
 
 Cell **CellGraph::operator[](int i) const {
-    return map[i + 1];
+    return map[i + 1] + 1;
 }
 
 Cell **CellGraph::operator[](int i) {
-    return map[i + 1];
+    return map[i + 1] + 1;
 }
 
 Cell *CellGraph::operator[](const Point &p) const {
