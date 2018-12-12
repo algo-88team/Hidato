@@ -77,6 +77,8 @@ bool Generator::Update(Puzzle &puzzle, CellGraph &graph, const Cell &cell) {
     graph.eraseCell(graph[cell.getPos()]);
     graph.checkNeighbor(cell);
 
+
+
     return false;
 }
 

@@ -38,13 +38,13 @@ void Cell::eraseCandidate(int n) {
 }
 
 bool Cell::is_Neighbor(int x, int y) {
-    return abs(pos.x - x) + abs(pos.y - y) <= 1;
+    return abs(pos.x - x) <= 1 && abs(pos.y - y) <= 1;
 }
 
 bool Cell::is_Neighbor(const Point &p) {
-    return abs(pos.x - p.x) + abs(pos.y - p.y) <= 1;
+    return abs(pos.x - p.x) <= 1 && abs(pos.y - p.y) <= 1;
 }
 
 bool Cell::is_Neighbor(const Cell &c) {
-    return abs(pos.x - c.pos.x) + abs(pos.y - c.pos.y) <= 1;
+    return abs(pos.x - c.pos.x) <= 1 && abs(pos.y - c.pos.y) <= 1;
 }
