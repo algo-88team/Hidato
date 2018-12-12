@@ -46,7 +46,7 @@ void Generator::Invert(Puzzle &puzzle) {
     puzzle.setNumEmptyCells(puzzle.getNumCells());
 }
 
-Puzzle *Generator::Fill(Puzzle puzzle, CellGraph graph) {
+Puzzle *Generator::Fill(Puzzle puzzle, CellGraph graph, Cell cell) {
     return nullptr;
 }
 
