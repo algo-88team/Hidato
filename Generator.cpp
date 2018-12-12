@@ -16,7 +16,13 @@ Puzzle &Generator::Generate(Puzzle &puzzle) {
     CellGraph graph(puzzle);
 
     //  Fill puzzle
-    Fill(puzzle, graph);
+    Puzzle *result;
+    do {
+        Cell randCell = graph.RandCell(1);
+        result = Fill(puzzle, graph, randCell);
+    } while (result == nullptr);
+
+    puzzle = *result;
 
     //  Check puzzle
     int checker = 0;
