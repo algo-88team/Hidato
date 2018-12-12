@@ -241,5 +241,9 @@ Cell *CellGraph::RandCell(int n) const {
     return *iter;
 }
 
+void CellGraph::eraseRemainder(int n, Cell *pC) {
+    remainders.find(n)->second.erase(pC);
+}
+
 
 }

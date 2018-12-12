@@ -69,6 +69,8 @@ public:
 
     Cell *RandCell(int n) const;
 
+    void eraseRemainder(int n, Cell* pC);
+
 private:
     int width;
     int height;
