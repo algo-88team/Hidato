@@ -11,7 +11,7 @@
 
 class Cell {
 public:
-    Cell() = default;
+    Cell() : data(0), pos(0, 0) {}
 
     Cell(int data, const Point &p) : data(data), pos(p) {}
 

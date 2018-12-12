@@ -15,7 +15,7 @@ public:
     Point(int x, int y);
 
     Point operator+(Point p) {
-        return Point(x + p.x, y + p.y);
+        return {x + p.x, y + p.y};
     }
 
     bool operator==(const Point &rhs) const {
