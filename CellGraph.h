@@ -36,6 +36,7 @@ public:
 
     Cell *getNextRandCell() const;
 
+    int getRemaindersSetSize();
 
     void eraseRemainder(int n, Cell *pCell);
 
@@ -46,6 +47,16 @@ public:
     void checkNeighbor(const Cell &c);
 
     bool checkMapping();
+
+    bool is_candidatesEmpty();
+
+    bool is_remaindersEmpty();
+
+    bool is_finished();
+
+    Cell *find_onlyCandidate();
+
+    Cell *find_onlyRemainder();
 
 private:
     int width;

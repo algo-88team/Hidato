@@ -6,6 +6,7 @@
 #include <random>
 
 
+
 CellGraph::CellGraph(const Puzzle &puzzle) {
     width = puzzle.getWidth();
     height = puzzle.getHeight();
@@ -230,6 +231,10 @@ Cell *CellGraph::getNextRandCell() const {
     return *remainder;
 }
 
+int CellGraph::getRemaindersSetSize() {
+    return remaindersSet.size();
+}
+
 void CellGraph::eraseRemainder(int n, Cell *pCell) {
     remaindersSet.find(n)->second.erase(pCell);
     pCell->eraseCandidate(n);
@@ -318,4 +323,55 @@ bool CellGraph::checkMapping() {
     }
 
     return true;
+}
+
+bool CellGraph::is_candidatesEmpty() {
+    for (auto &cell : cells) {
+        if (cell->isCandidatesEmpty()) {
+            return false;
+        }
+    }
+    return true;
+}
+
+bool CellGraph::is_remaindersEmpty() {
+    for (auto &remainders : remaindersSet) {
+        if (remainders.second.empty()) {
+            return false;
+        }
+    }
+    return true;
+}
+
+bool CellGraph::is_finished() {
+    return cells.empty() && remaindersSet.empty();
+}
+
+Cell *CellGraph::find_onlyCandidate() {
+    for (auto &cell : cells) {
+        if (cell->getCandidatesSize() == 1) {
+            int data = cell->getCandidate();
+            auto itr = remaindersSet.find(data);
+            if (itr == remaindersSet.end() || itr->second.find(cell) == itr->second.end()) {
+                return nullptr;
+            }
+            cell->setDataCandidate();
+            return cell;
+        }
+    }
+    return nullptr;
+}
+
+Cell *CellGraph::find_onlyRemainder() {
+    for (auto &remainders : remaindersSet) {
+        if (remainders.second.size() == 1) {
+            Cell *cell = *remainders.second.begin();
+            if (cell->is_candidate(remainders.first)) {
+                return nullptr;
+            }
+            cell->setData(remainders.first);
+            return cell;
+        }
+    }
+    return nullptr;
 }
