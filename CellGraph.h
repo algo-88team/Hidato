@@ -19,7 +19,7 @@ public:
 
     Cell(int data, int x, int y) : data(data), pos(x, y) {}
 
-    Cell(const Cell &c) : data(c.data), pos(c.pos), candidate(c.candidate) {}
+    Cell(const Cell &c) = default;
 
     virtual ~Cell();
 
@@ -34,6 +34,12 @@ public:
     void insertCandidate(int n);
 
     void eraseCandidate(int n);
+
+    bool is_Neighbor(int x, int y);
+
+    bool is_Neighbor(const Point &p);
+
+    bool is_Neighbor(const Cell &c);
 
 private:
     int data;
@@ -60,6 +66,8 @@ public:
     Cell *&operator[](const Point &p);
 
     CellGraph &operator=(const CellGraph &cg);
+
+    Cell RandCell(int n) const;
 
 private:
     int width;

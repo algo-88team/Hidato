@@ -3,6 +3,8 @@
 //
 
 #include "CellGraph.h"
+#include <random>
+#include <time.h>
 
 Cell::~Cell() {
     candidates.clear();
@@ -36,6 +38,19 @@ void Cell::insertCandidate(int n) {
 void Cell::eraseCandidate(int n) {
     candidates.erase(n);
 }
+
+bool Cell::is_Neighbor(int x, int y) {
+    return abs(pos.x - x) + abs(pos.y - y) <= 1;
+}
+
+bool Cell::is_Neighbor(const Point &p) {
+    return abs(pos.x - p.x) + abs(pos.y - p.y) <= 1;
+}
+
+bool Cell::is_Neighbor(const Cell &c) {
+    return abs(pos.x - c.pos.x) + abs(pos.y - c.pos.y) <= 1;
+}
+
 
 CellGraph::CellGraph(const Puzzle &puzzle) {
     width = puzzle.getWidth();
@@ -180,4 +195,10 @@ CellGraph &CellGraph::operator=(const CellGraph &cg) {
 
 
     return *this;
+}
+
+Cell CellGraph::RandCell(int n) const {
+    srand(static_cast<unsigned int>(time(nullptr)));
+
+    return Cell();
 }
