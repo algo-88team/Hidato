@@ -8,10 +8,14 @@
 #include "Generator.h"
 #include "Solver.h"
 
+#define RANDOM_SEED (time(nullptr))
+
 int main() {
     Puzzle puzzle;
     Generator generator;
     Solver solver;
+
+    srand(static_cast<unsigned int>(RANDOM_SEED));
 
     puzzle.LoadFormFile("input.txt");
 
@@ -23,6 +27,8 @@ int main() {
 
     std::cout << "Solved puzzle" << std::endl;
     std::cout << solver.Solve(puzzle) << std::endl;
+
+//    std::getchar();
 
     return 0;
 }
