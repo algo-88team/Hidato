@@ -11,6 +11,7 @@
 
 class Generator {
 public:
+    Generator() : width(0), height(0), numCells(0) {}
     Puzzle &Generate(Puzzle &puzzle);
 
 private:
