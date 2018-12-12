@@ -74,7 +74,7 @@ private:
     int height;
 
     Cell ***map;
-    std::vector<Cell> cells;
+    std::vector<Cell *> cells;
     std::map<int, std::set<Cell *>> remainders;
 };
 

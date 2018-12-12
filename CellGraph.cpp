@@ -227,7 +227,6 @@ CellGraph &CellGraph::operator=(const CellGraph &cg) {
     return *this;
 }
 
-Cell CellGraph::RandCell(int n) const {
 Cell *CellGraph::RandCell(int n) const {
     srand(static_cast<unsigned int>(time(nullptr)));
     auto &nRemainders = remainders.find(n)->second;
@@ -243,5 +242,4 @@ Cell *CellGraph::RandCell(int n) const {
 }
 
 
-    return Cell();
 }
