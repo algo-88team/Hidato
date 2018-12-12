@@ -196,7 +196,10 @@ CellGraph &CellGraph::operator=(const CellGraph &cg) {
     return *this;
 }
 
-Cell *CellGraph::RandCell(int n) const {
+Cell *CellGraph::getRandCell(int n) const {
+    if (remaindersSet.empty()) {
+        return nullptr;
+    }
     auto &remainders = remaindersSet.find(n)->second;
     if (remainders.empty()) {
         return nullptr;
@@ -206,6 +209,24 @@ Cell *CellGraph::RandCell(int n) const {
     for (int i = 0; i < idx; ++i) {
         ++remainder;
     }
+    return *remainder;
+}
+
+Cell *CellGraph::getNextRandCell() const {
+    if (remaindersSet.empty()) {
+        return nullptr;
+    }
+    auto iter = remaindersSet.begin();
+    auto &remainders = iter->second;
+    if (remainders.empty()) {
+        return nullptr;
+    }
+    unsigned long idx = rand() % remainders.size();
+    auto remainder = remainders.begin();
+    for (int i = 0; i < idx; ++i) {
+        ++remainder;
+    }
+    ((Cell *)*remainder)->setData(iter->first);
     return *remainder;
 }
 

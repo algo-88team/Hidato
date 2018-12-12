@@ -20,7 +20,7 @@ Puzzle &Generator::Generate(Puzzle &puzzle) {
     //  Fill puzzle
     Puzzle *result;
     do {
-        Cell *randCell = graph.RandCell(1);
+        Cell *randCell = graph.getRandCell(1);
         if (randCell == nullptr) {
             std::cout << "There are no way" << std::endl;
             return puzzle;

@@ -32,7 +32,10 @@ public:
 
     CellGraph &operator=(const CellGraph &cg);
 
-    Cell *RandCell(int n) const;
+    Cell *getRandCell(int n) const;
+
+    Cell *getNextRandCell() const;
+
 
     void eraseRemainder(int n, Cell *pCell);
 
