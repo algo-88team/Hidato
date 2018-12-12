@@ -31,10 +31,14 @@ public:
 
     Cell &operator=(const Cell &c);
 
+    void insertCandidate(int n);
+
+    void eraseCandidate(int n);
+
 private:
     int data;
     Point pos;
-    std::set<int> candidate;
+    std::set<int> candidates;
 };
 
 class CellGraph {

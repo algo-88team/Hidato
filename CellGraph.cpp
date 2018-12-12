@@ -5,8 +5,8 @@
 #include "CellGraph.h"
 
 Cell::~Cell() {
-    candidate.clear();
-    std::set<int>().swap(candidate);
+    candidates.clear();
+    std::set<int>().swap(candidates);
 }
 
 int Cell::getData() const {
@@ -24,11 +24,18 @@ const Point &Cell::getPos() const {
 Cell &Cell::operator=(const Cell &c) {
     data = c.data;
     pos = c.pos;
-    candidate.clear();
-    candidate = c.candidate;
+    candidates.clear();
+    candidates = c.candidates;
     return *this;
 }
 
+void Cell::insertCandidate(int n) {
+    candidates.insert(n);
+}
+
+void Cell::eraseCandidate(int n) {
+    candidates.erase(n);
+}
 
 CellGraph::CellGraph(const Puzzle &puzzle) {
     width = puzzle.getWidth();
