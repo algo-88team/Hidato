@@ -74,14 +74,21 @@ CellGraph::CellGraph(const Puzzle &puzzle) {
     for (int i = 0; i < height; ++i) {
         for (int j = 0; j < width; ++j) {
             int value = puzzle[i][j];
+            auto &p = (*this)[i][j];
             if (value < 0) {
-                (*this)[i][j] = &*cells.emplace(cells.end(), value, j, i);
+                p = new Cell(value, j, i);
+                cells.emplace_back(p);
+
                 for (auto &remainder : remainders) {
-                    remainder.second.insert((*this)[i][j]);
-                    (*this)[i][j]->insertCandidate(remainder.first);
+                    remainder.second.insert(p);
+                    p->insertCandidate(remainder.first);
                 }
             } else if (value > 0) {
-                remainders.erase(puzzle[i][j]);
+                auto &remainder = remainders.find(value)->second;
+                remainder.clear();
+                std::set<Cell *>().swap(remainder);
+                remainders.erase(value);
+
                 int prevValue = value - 1;
                 int nextValue = value + 1;
 
@@ -104,27 +111,34 @@ CellGraph::CellGraph(const Puzzle &puzzle) {
     }
 }
 
-CellGraph::CellGraph(const CellGraph &cg) : width(cg.width), height(cg.height), cells(cg.cells),
-                                            remainders(cg.remainders) {
+CellGraph::CellGraph(const CellGraph &cg) : width(cg.width), height(cg.height), cells(cg.cells) {
 
     //  Allocate map
     map = new Cell **[height + 2];
     for (int i = 0; i < height + 2; ++i) {
         map[i] = new Cell *[width + 2];
         for (int j = 0; j < width + 2; ++j) {
-            map[i][j] = nullptr;
+            map[i][j] = cg.map[i][j] == nullptr ? nullptr : new Cell(*cg.map[i][j]);
         }
     }
 
-    //  Mapping map
+    //  Mapping cells
     for (auto &cell : cells) {
-        (*this)[cell.getPos()] = &cell;
+        cell = (*this)[cell->getPos()];
+    }
+
+    //  Mapping remainders
+    for (auto &cgRemainder : cg.remainders) {
+        std::pair<std::map<int, std::set<Cell *>>::iterator, bool> remainder = remainders.insert(std::pair<int, std::set<Cell *>>(cgRemainder.first, std::set<Cell *>()));
+        for (auto &iter : cgRemainder.second) {
+            remainder.first->second.insert((*this)[iter->getPos()]);
+        }
     }
 }
 
 CellGraph::~CellGraph() {
     cells.clear();
-    std::vector<Cell>().swap(cells);
+    std::vector<Cell *>().swap(cells);
 
     for (auto &remainder : remainders) {
         remainder.second.clear();
@@ -135,6 +149,11 @@ CellGraph::~CellGraph() {
 
     if (map != nullptr) {
         for (int i = 0; i < height + 2; ++i) {
+            for (int j = 0; j < width + 2; ++j) {
+                if (map[i][j] != nullptr) {
+                    delete map[i][j];
+                }
+            }
             delete[] map[i];
         }
         delete[] map;
@@ -168,6 +187,11 @@ CellGraph &CellGraph::operator=(const CellGraph &cg) {
 
     if (map != nullptr) {
         for (int i = 0; i < height + 2; ++i) {
+            for (int j = 0; j < width + 2; ++j) {
+                if (map[i][j] != nullptr) {
+                    delete map[i][j];
+                }
+            }
             delete[] map[i];
         }
         delete[] map;
@@ -176,7 +200,6 @@ CellGraph &CellGraph::operator=(const CellGraph &cg) {
     width = cg.width;
     height = cg.height;
     cells = cg.cells;
-    remainders = cg.remainders;
 
 
     //  Allocate map
@@ -184,15 +207,22 @@ CellGraph &CellGraph::operator=(const CellGraph &cg) {
     for (int i = 0; i < height + 2; ++i) {
         map[i] = new Cell *[width + 2];
         for (int j = 0; j < width + 2; ++j) {
-            map[i][j] = nullptr;
+            map[i][j] = cg.map[i][j] == nullptr ? nullptr : new Cell(*cg.map[i][j]);
         }
     }
 
-    //  Mapping map
+    //  Mapping cells
     for (auto &cell : cells) {
-        (*this)[cell.getPos()] = &cell;
+        cell = (*this)[cell->getPos()];
     }
 
+    //  Mapping remainders
+    for (auto &cgRemainder : cg.remainders) {
+        std::pair<std::map<int, std::set<Cell *>>::iterator, bool> remainder = remainders.insert(std::pair<int, std::set<Cell *>>(cgRemainder.first, std::set<Cell *>()));
+        for (auto &iter : cgRemainder.second) {
+            remainder.first->second.insert((*this)[iter->getPos()]);
+        }
+    }
 
     return *this;
 }
