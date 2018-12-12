@@ -228,7 +228,20 @@ CellGraph &CellGraph::operator=(const CellGraph &cg) {
 }
 
 Cell CellGraph::RandCell(int n) const {
+Cell *CellGraph::RandCell(int n) const {
     srand(static_cast<unsigned int>(time(nullptr)));
+    auto &nRemainders = remainders.find(n)->second;
+    if (nRemainders.empty()) {
+        return nullptr;
+    }
+    unsigned long idx = rand() % nRemainders.size();
+    auto iter = nRemainders.begin();
+    for (int i = 0; i < idx; ++i) {
+        ++iter;
+    }
+    return *iter;
+}
+
 
     return Cell();
 }

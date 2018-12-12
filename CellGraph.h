@@ -67,7 +67,7 @@ public:
 
     CellGraph &operator=(const CellGraph &cg);
 
-    Cell RandCell(int n) const;
+    Cell *RandCell(int n) const;
 
 private:
     int width;
