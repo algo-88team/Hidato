@@ -15,11 +15,22 @@ Puzzle &Generator::Generate(Puzzle &puzzle) {
     //  Create CellGraph
     CellGraph graph(puzzle);
 
+
     //  Fill puzzle
     Puzzle *result;
     do {
-        Cell randCell = graph.RandCell(1);
-        result = Fill(puzzle, graph, randCell);
+        Cell *randCell = graph.RandCell(1);
+        if (randCell == nullptr) {
+            std::cout << "There are no way" << std::endl;
+            break;
+        }
+
+        result = Fill(puzzle, graph, *randCell);
+
+        if (result == nullptr) {
+            randCell->eraseCandidate(1);
+            graph.eraseRemainder(1, randCell);
+        }
     } while (result == nullptr);
 
     puzzle = *result;
@@ -52,7 +63,7 @@ void Generator::Invert(Puzzle &puzzle) {
     puzzle.setNumEmptyCells(puzzle.getNumCells());
 }
 
-Puzzle *Generator::Fill(Puzzle puzzle, CellGraph graph, Cell cell) {
+Puzzle *Generator::Fill(Puzzle puzzle, CellGraph graph, const Cell &cell) {
     return nullptr;
 }
 
