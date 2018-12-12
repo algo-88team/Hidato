@@ -17,6 +17,14 @@ void Cell::setData(int data) {
     Cell::data = data;
 }
 
+void Cell::setDataCandidate() {
+    data = *candidates.begin();
+}
+
+int Cell::getCandidate() {
+    return *candidates.begin();
+}
+
 const Point &Cell::getPos() const {
     return pos;
 }
@@ -47,4 +55,16 @@ bool Cell::is_Neighbor(const Point &p) {
 
 bool Cell::is_Neighbor(const Cell &c) {
     return abs(pos.x - c.pos.x) <= 1 && abs(pos.y - c.pos.y) <= 1;
+}
+
+int Cell::getCandidatesSize() {
+    return static_cast<int>(candidates.size());
+}
+
+bool Cell::isCandidatesEmpty() {
+    return candidates.empty();
+}
+
+bool Cell::is_candidate(int n) {
+    return candidates.find(n) != candidates.end();
 }

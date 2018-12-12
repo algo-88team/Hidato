@@ -25,6 +25,10 @@ public:
 
     void setData(int data);
 
+    void setDataCandidate();
+
+    int getCandidate();
+
     const Point &getPos() const;
 
     Cell &operator=(const Cell &c);
@@ -33,11 +37,17 @@ public:
 
     void eraseCandidate(int n);
 
+    bool is_candidate(int n);
+
     bool is_Neighbor(int x, int y);
 
     bool is_Neighbor(const Point &p);
 
     bool is_Neighbor(const Cell &c);
+
+    bool isCandidatesEmpty();
+
+    int getCandidatesSize();
 
 private:
     int data;
