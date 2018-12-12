@@ -7,6 +7,7 @@
 
 #include <vector>
 #include <set>
+#include <map>
 
 #include "Puzzle.h"
 
@@ -62,7 +63,7 @@ private:
 
     Cell ***map;
     std::vector<Cell> cells;
-    std::set<int> remainders;
+    std::map<int, std::set<Cell *>> remainders;
 };
 
 

@@ -45,16 +45,38 @@ CellGraph::CellGraph(const Puzzle &puzzle) {
 
     //  Initialize remainders
     for (int n = 1; n < puzzle.getNumCells() + 1; ++n) {
-        remainders.insert(n);
+        remainders.insert(std::pair<int, std::set<Cell *>>(n, std::set<Cell *>()));
     }
 
     //  Create Cells
     for (int i = 0; i < height; ++i) {
         for (int j = 0; j < width; ++j) {
-            if (puzzle[i][j] < 0) {
-                (*this)[i][j] = &*cells.emplace(cells.end(), puzzle[i][j], j, i);
-            } else if (puzzle[i][j] > 0) {
+            int value = puzzle[i][j];
+            if (value < 0) {
+                (*this)[i][j] = &*cells.emplace(cells.end(), value, j, i);
+                for (auto &remainder : remainders) {
+                    remainder.second.insert((*this)[i][j]);
+                    (*this)[i][j]->insertCandidate(remainder.first);
+                }
+            } else if (value > 0) {
                 remainders.erase(puzzle[i][j]);
+                int prevValue = value - 1;
+                int nextValue = value + 1;
+
+                auto &prevCells = remainders.find(prevValue)->second;
+                for (auto &prevCell : prevCells) {
+                    if (!prevCell->is_Neighbor(j, i)) {
+                        prevCell->eraseCandidate(prevValue);
+                    }
+                }
+
+                auto &nextCells = remainders.find(nextValue)->second;
+                for (auto &nextCell : nextCells) {
+                    if (!nextCell->is_Neighbor(j, i)) {
+                        nextCell->eraseCandidate(nextValue);
+                    }
+                }
+
             }
         }
     }
@@ -81,8 +103,13 @@ CellGraph::CellGraph(const CellGraph &cg) : width(cg.width), height(cg.height), 
 CellGraph::~CellGraph() {
     cells.clear();
     std::vector<Cell>().swap(cells);
+
+    for (auto &remainder : remainders) {
+        remainder.second.clear();
+        std::set<Cell *>().swap(remainder.second);
+    }
     remainders.clear();
-    std::set<int>().swap(remainders);
+    std::map<int, std::set<Cell *>>().swap(remainders);
 
     if (map != nullptr) {
         for (int i = 0; i < height + 2; ++i) {
@@ -110,6 +137,11 @@ Cell *&CellGraph::operator[](const Point &p) {
 
 CellGraph &CellGraph::operator=(const CellGraph &cg) {
     cells.clear();
+
+    for (auto &remainder : remainders) {
+        remainder.second.clear();
+        std::set<Cell *>().swap(remainder.second);
+    }
     remainders.clear();
 
     if (map != nullptr) {
