@@ -19,6 +19,13 @@ private:
     int height;
     int numCells;
 
+    int start_x,start_y;
+    int direction[8][2] = { {0, -1}, {1, -1}, {1, 0}, {1, 1}, {0, 1}, {-1, 1}, {-1, 0}, {-1, -1} };
+
+    void Init_start(Puzzle &puzzle);
+
+    void Recursive(Puzzle &puzzle);
+
     void Invert(Puzzle &puzzle);
 
     Puzzle *Fill(Puzzle puzzle, CellGraph graph, const Cell cell);

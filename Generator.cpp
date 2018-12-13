@@ -12,7 +12,7 @@ Puzzle &Generator::Generate(Puzzle &puzzle) {
 
     //  Change empty cells from 1 to -1
     Invert(puzzle);
-
+    /*
     //  Create CellGraph
     CellGraph graph(puzzle);
 
@@ -52,7 +52,10 @@ Puzzle &Generator::Generate(Puzzle &puzzle) {
         std::cout << "Fill failed." << std::endl;
         return puzzle;
     }
+    */
+    Init_start(puzzle);
 
+    std::cout << start_x << "  "<< start_y << std::endl;
 
     return puzzle;
 }
@@ -64,6 +67,25 @@ void Generator::Invert(Puzzle &puzzle) {
         }
     }
     puzzle.setNumEmptyCells(puzzle.getNumCells());
+}
+
+void Generator::Init_start(Puzzle &puzzle) {
+    int x,y = 0;
+    x = std::rand()%width;  //rand() : 난수표 사용해서 항상 일정한 패턴으로 결과값 생성됨
+    y = std::rand()%height;
+
+
+    if(puzzle[x][y] == -1){
+        std::cout << x << "  "<< y << std::endl;
+        std::cout << "random start point" << std::endl;
+        start_x = x;
+        start_y = y;
+    }
+    else {
+        std::cout << x << "  "<< y << std::endl;
+        std::cout << "start point assign again" << std::endl;
+        Init_start(puzzle);
+    } // 생성된 시작점이 0(벽) 일시 다시 실행
 }
 
 Puzzle *Generator::Fill(Puzzle puzzle, CellGraph graph, const Cell cell) {
