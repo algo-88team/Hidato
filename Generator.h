@@ -22,9 +22,11 @@ private:
     int start_x,start_y;
     int direction[8][2] = { {0, -1}, {1, -1}, {1, 0}, {1, 1}, {0, 1}, {-1, 1}, {-1, 0}, {-1, -1} };
 
+    //초기화 함수 필요 generater에?puzzle에?
+
     void Init_start(Puzzle &puzzle);
 
-    void Recursive(Puzzle &puzzle);
+    void Recursive(Puzzle &puzzle,int x,int y,int count);
 
     void Invert(Puzzle &puzzle);
 

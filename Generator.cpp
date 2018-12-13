@@ -55,9 +55,39 @@ Puzzle &Generator::Generate(Puzzle &puzzle) {
     */
     Init_start(puzzle);
 
+    int num = 1;
     std::cout << start_x << "  "<< start_y << std::endl;
-
+    int x,y;
+    x = start_x;
+    y = start_y;
+    //puzzle[start_x][start_y] = num;
+    Recursive(puzzle,x,y,1);
     return puzzle;
+}
+void Generator::Recursive(Puzzle &puzzle,int x,int y,int count){
+    std::cout << "step : "  <<count << std::endl;
+
+    //isback?
+    int isback = 0;
+    for(int i = 0; i < 8; i++){
+        if (puzzle[x+direction[i][0]][y+direction[i][1]] == -1)
+            isback = 1;
+    }
+
+
+    if(puzzle[x][y] == -1 && isback == 1) {
+        puzzle[x][y] = count;
+        for(int i = 0; i < 8; i ++){
+            //std::cout << direction[i][0]<< " "<<direction[i][1] << std::endl;
+            Recursive(puzzle,x+direction[i][0],y+direction[i][1],count+1);
+        }
+    }
+
+    else if (count == puzzle.getNumCells()){ // 퍼즐 완성
+        puzzle[x][y] = count;
+        return;
+    }
+
 }
 
 void Generator::Invert(Puzzle &puzzle) {
