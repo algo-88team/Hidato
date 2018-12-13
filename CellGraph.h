@@ -7,34 +7,10 @@
 
 #include <vector>
 #include <set>
+#include <map>
 
 #include "Puzzle.h"
-
-class Cell {
-public:
-    Cell() = default;
-
-    Cell(int data, const Point &p) : data(data), pos(p) {}
-
-    Cell(int data, int x, int y) : data(data), pos(x, y) {}
-
-    Cell(const Cell &c) : data(c.data), pos(c.pos), candidate(c.candidate) {}
-
-    virtual ~Cell();
-
-    int getData() const;
-
-    void setData(int data);
-
-    const Point &getPos() const;
-
-    Cell &operator=(const Cell &c);
-
-private:
-    int data;
-    Point pos;
-    std::set<int> candidate;
-};
+#include "Cell.h"
 
 class CellGraph {
 public:
@@ -56,13 +32,39 @@ public:
 
     CellGraph &operator=(const CellGraph &cg);
 
+    Cell *getRandCell(int n) const;
+
+    Cell *getNextRandCell() const;
+
+    int getRemaindersSetSize();
+
+    void eraseRemainder(int n, Cell *pCell);
+
+    void eraseRemainders(int n);
+
+    void eraseCell(Cell *pCell);
+
+    void checkNeighbor(const Cell &c);
+
+    bool checkMapping();
+
+    bool is_candidatesEmpty();
+
+    bool is_remaindersEmpty();
+
+    bool is_finished();
+
+    Cell *find_onlyCandidate();
+
+    Cell *find_onlyRemainder();
+
 private:
     int width;
     int height;
 
     Cell ***map;
-    std::vector<Cell> cells;
-    std::set<int> remainders;
+    std::vector<Cell *> cells;
+    std::map<int, std::set<Cell *>> remaindersSet;
 };
 
 

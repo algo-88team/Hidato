@@ -11,6 +11,7 @@
 
 class Generator {
 public:
+    Generator() : width(0), height(0), numCells(0) {}
     Puzzle &Generate(Puzzle &puzzle);
 
 private:
@@ -19,7 +20,10 @@ private:
     int numCells;
 
     void Invert(Puzzle &puzzle);
-    Puzzle *Fill(Puzzle puzzle, CellGraph graph);
+
+    Puzzle *Fill(Puzzle puzzle, CellGraph graph, const Cell cell);
+
+    bool Update(Puzzle &puzzle, CellGraph &graph, const Cell cell);
 };
 
 
