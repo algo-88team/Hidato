@@ -5,6 +5,9 @@
 #include "Generator.h"
 #include "Cell.h"
 
+#include <random>
+#include <algorithm>
+
 Puzzle &Generator::Generate(Puzzle &puzzle) {
     width = puzzle.getWidth();
     height = puzzle.getHeight();
@@ -61,33 +64,47 @@ Puzzle &Generator::Generate(Puzzle &puzzle) {
     x = start_x;
     y = start_y;
     //puzzle[start_x][start_y] = num;
-    Recursive(puzzle,x,y,1);
+    Recursive(puzzle, {x,y},1);
     return puzzle;
 }
-void Generator::Recursive(Puzzle &puzzle,int x,int y,int count){
-    std::cout << "step : "  <<count << std::endl;
 
-    //isback?
-    int isback = 0;
-    for(int i = 0; i < 8; i++){
-        if (puzzle[x+direction[i][0]][y+direction[i][1]] == -1)
-            isback = 1;
-    }
+//void Generator::Recursive(Puzzle &puzzle,int x,int y,int count){
+//    std::cout << "step : "  <<count << std::endl;
+//
+//    //isback?
+//    int isback = 0;
+//    for(int i = 0; i < 8; i++){
+//        if (puzzle[x+direction[i].x][y+direction[i].y] == -1)
+//            isback = 1;
+//    }
+//
+//
+//    if(puzzle[x][y] == -1 && isback == 1) {
+//        puzzle[x][y] = count;
+//        for(int i = 0; i < 8; i ++){
+//            //std::cout << direction[i][0]<< " "<<direction[i][1] << std::endl;
+//            Recursive(puzzle,x+direction[i][0],y+direction[i][1],count+1);
+//        }
+//    }
+//
+//    else if (count == puzzle.getNumCells()){ // 퍼즐 완성
+//        puzzle[x][y] = count;
+//        return;
+//    }
+//
+//}
 
-
-    if(puzzle[x][y] == -1 && isback == 1) {
-        puzzle[x][y] = count;
-        for(int i = 0; i < 8; i ++){
-            //std::cout << direction[i][0]<< " "<<direction[i][1] << std::endl;
-            Recursive(puzzle,x+direction[i][0],y+direction[i][1],count+1);
+bool Generator::Recursive(Puzzle &puzzle, Point pos, int n) {
+    puzzle[pos] = n;
+    for (int i = 0; i < 8; ++i) {
+        std::vector<Point> dir(direction);
+        std::random_shuffle(dir.begin(), dir.end());
+        if (Recursive(puzzle, pos+dir[i], n+1)) {
+            return true;
         }
     }
-
-    else if (count == puzzle.getNumCells()){ // 퍼즐 완성
-        puzzle[x][y] = count;
-        return;
-    }
-
+    puzzle[pos] = -1;
+    return false;
 }
 
 void Generator::Invert(Puzzle &puzzle) {
