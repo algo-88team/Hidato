@@ -20,9 +20,11 @@ private:
     int numCells;
 
     int start_x,start_y;
-    std::vector<Point> direction = { {0, -1}, {1, -1}, {1, 0}, {1, 1}, {0, 1}, {-1, 1}, {-1, 0}, {-1, -1} };
+    std::vector<Point> **direction;
 
     //초기화 함수 필요 generater에?puzzle에?
+
+    void init_direction(const Puzzle &puzzle);
 
     void Init_start(Puzzle &puzzle);
 

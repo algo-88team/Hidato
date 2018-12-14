@@ -27,6 +27,10 @@ public:
         return !(rhs == *this);
     }
 
+    bool operator<(const Point &rhs) const {
+        return x == rhs.x ? y < rhs.y : x < rhs.x;
+    }
+
     friend std::ostream &operator<<(std::ostream &o, const Point &p) {
         return o << p.x << " " << p.y;
     }

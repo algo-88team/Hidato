@@ -28,7 +28,7 @@ int main() {
     std::cout << "Solved puzzle" << std::endl;
     std::cout << solver.Solve(puzzle) << std::endl;
 
-//    std::getchar();
+    std::getchar();
 
     return 0;
 }

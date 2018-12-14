@@ -1,3 +1,5 @@
+#include <random>
+
 //
 // Created by thdtj on 2018-11-21.
 //
@@ -15,6 +17,9 @@ Puzzle &Generator::Generate(Puzzle &puzzle) {
 
     //  Change empty cells from 1 to -1
     Invert(puzzle);
+
+    //  Init random direction
+    init_direction(puzzle);
     /*
     //  Create CellGraph
     CellGraph graph(puzzle);
@@ -95,14 +100,16 @@ Puzzle &Generator::Generate(Puzzle &puzzle) {
 //}
 
 bool Generator::Recursive(Puzzle &puzzle, Point pos, int n) {
+    if (n > puzzle.getNumEmptyCells()) {
+        return true;
+    }
     if (puzzle[pos] != -1) {
         return false;
     }
     puzzle[pos] = n;
+    std::vector<Point> &dir = direction[pos.y][pos.x];
     for (int i = 0; i < 8; ++i) {
-        std::vector<Point> dir(direction);
-        std::random_shuffle(dir.begin(), dir.end());
-        if (Recursive(puzzle, pos+dir[i], n+1)) {
+        if (Recursive(puzzle, pos + dir[i], n+1)) {
             return true;
         }
     }
@@ -192,5 +199,23 @@ bool Generator::Update(Puzzle &puzzle, CellGraph &graph, const Cell cell) {
     }
 
     return Update(puzzle, graph, *pCell);
+}
+
+void Generator::init_direction(const Puzzle &puzzle) {
+    std::vector<Point> dir = { {0, -1}, {1, -1}, {1, 0}, {1, 1}, {0, 1}, {-1, 1}, {-1, 0}, {-1, -1} };
+
+    direction = new std::vector<Point> *[height];
+
+    for (int i = 0; i < height; ++i) {
+        direction[i] = new std::vector<Point>[width];
+        for (int j = 0; j < width; ++j) {
+            Point p = {j, i};
+            if (puzzle[p] == -1) {
+                std::vector<Point> shuffled(dir);
+                std::shuffle(shuffled.begin(), shuffled.end(), std::mt19937(std::random_device()()));
+                direction[i][j] = shuffled;
+            }
+        }
+    }
 }
 
