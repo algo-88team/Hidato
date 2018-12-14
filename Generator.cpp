@@ -95,6 +95,9 @@ Puzzle &Generator::Generate(Puzzle &puzzle) {
 //}
 
 bool Generator::Recursive(Puzzle &puzzle, Point pos, int n) {
+    if (puzzle[pos] != -1) {
+        return false;
+    }
     puzzle[pos] = n;
     for (int i = 0; i < 8; ++i) {
         std::vector<Point> dir(direction);
