@@ -42,6 +42,8 @@ private:
 
     void Invert(Puzzle &puzzle);
 
+    bool is_UniquePath(int num, const int goal, Point pos);
+
     Puzzle *Fill(Puzzle puzzle, CellGraph graph, const Cell cell);
 
     bool Update(Puzzle &puzzle, CellGraph &graph, const Cell cell);

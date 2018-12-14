@@ -206,6 +206,43 @@ Generator::~Generator() {
 
     delete[] map;
 }
+
+bool Generator::is_UniquePath(int num, const int goal, Point pos) {
+    std::vector<Point> &dir = direction[pos.y][pos.x];
+
+    if (num == goal - 1) {
+        for (int i = 0; i < 8; i++) {
+            Point next = pos + dir[i];
+            if (GET(map, next) == num + 1) {
+                return is_UniquePath(num + 1, goal, next);
+            }
+        }
+        return false;
+    }
+
+    for (int i = 0; i < 8; i++) {
+        Point next = pos + dir[i];
+        if (GET(map, next) == num + 1) {
+            return is_UniquePath(num + 1, goal, next);
+        }
+    }
+
+    int count = 0;
+
+    for (int i = 0; i < 8; i++) {
+        if (count > 1) {
+            return false;
+        }
+        Point next = pos + dir[i];
+
+        if (GET(map, next) == -1) {
+            GET(map, next) = num + 1;
+            count += is_UniquePath(num + 1, goal, next);
+            GET(map, next) = -1;
+        }
+    }
+
+    return count == 1;
 }
 
 Puzzle *Generator::Fill(Puzzle puzzle, CellGraph graph, const Cell cell) {
