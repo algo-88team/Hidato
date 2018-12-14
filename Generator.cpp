@@ -10,16 +10,26 @@
 #include <random>
 #include <algorithm>
 
+#define GET(map, p) (map[p.y * width2 + p.x])
+
 Puzzle &Generator::Generate(Puzzle &puzzle) {
     width = puzzle.getWidth();
     height = puzzle.getHeight();
+    width2 = width + 2;
+    height2 = height + 2;
     numCells = puzzle.getNumCells();
 
     //  Change empty cells from 1 to -1
     Invert(puzzle);
 
+    //  Init map
+    init_map(puzzle);
+
     //  Init random direction
     init_direction(puzzle);
+
+    //  Init start
+    Init_startLoader(puzzle);
     /*
     //  Create CellGraph
     CellGraph graph(puzzle);
@@ -61,43 +71,21 @@ Puzzle &Generator::Generate(Puzzle &puzzle) {
         return puzzle;
     }
     */
-    Init_start(puzzle);
+    bool result;
+    do {
+        if (startLoader.empty()) {
+            std::cout << "There is no way." << std::endl;
+        }
 
-    int num = 1;
-    std::cout << start_x << "  "<< start_y << std::endl;
-    int x,y;
-    x = start_x;
-    y = start_y;
-    //puzzle[start_x][start_y] = num;
-    Recursive(puzzle, {x,y},1);
+        result = Recursive(*startLoader.begin(), 1);
+        startLoader.erase(startLoader.begin());
+    } while (!result);
+
+
+
+    copy_map(puzzle);
     return puzzle;
 }
-
-//void Generator::Recursive(Puzzle &puzzle,int x,int y,int count){
-//    std::cout << "step : "  <<count << std::endl;
-//
-//    //isback?
-//    int isback = 0;
-//    for(int i = 0; i < 8; i++){
-//        if (puzzle[x+direction[i].x][y+direction[i].y] == -1)
-//            isback = 1;
-//    }
-//
-//
-//    if(puzzle[x][y] == -1 && isback == 1) {
-//        puzzle[x][y] = count;
-//        for(int i = 0; i < 8; i ++){
-//            //std::cout << direction[i][0]<< " "<<direction[i][1] << std::endl;
-//            Recursive(puzzle,x+direction[i][0],y+direction[i][1],count+1);
-//        }
-//    }
-//
-//    else if (count == puzzle.getNumCells()){ // 퍼즐 완성
-//        puzzle[x][y] = count;
-//        return;
-//    }
-//
-//}
 
 bool Generator::Recursive(Puzzle &puzzle, Point pos, int n) {
     if (n > puzzle.getNumEmptyCells()) {
@@ -109,11 +97,29 @@ bool Generator::Recursive(Puzzle &puzzle, Point pos, int n) {
     puzzle[pos] = n;
     std::vector<Point> &dir = direction[pos.y][pos.x];
     for (int i = 0; i < 8; ++i) {
-        if (Recursive(puzzle, pos + dir[i], n+1)) {
+        if (Recursive(puzzle, pos + dir[i], n + 1)) {
             return true;
         }
     }
     puzzle[pos] = -1;
+    return false;
+}
+
+bool Generator::Recursive(Point pos, int n) {
+    if (n > numCells) {
+        return true;
+    }
+    if (GET(map, pos) != -1) {
+        return false;
+    }
+    GET(map, pos) = n;
+    std::vector<Point> &dir = direction[pos.y][pos.x];
+    for (int i = 0; i < 8; ++i) {
+        if (Recursive(pos + dir[i], n + 1)) {
+            return true;
+        }
+    }
+    GET(map, pos) = -1;
     return false;
 }
 
@@ -126,23 +132,80 @@ void Generator::Invert(Puzzle &puzzle) {
     puzzle.setNumEmptyCells(puzzle.getNumCells());
 }
 
-void Generator::Init_start(Puzzle &puzzle) {
-    int x,y = 0;
-    x = std::rand()%width;  //rand() : 난수표 사용해서 항상 일정한 패턴으로 결과값 생성됨
-    y = std::rand()%height;
+void Generator::init_direction(const Puzzle &puzzle) {
+    std::vector<Point> dir = {{0,  -1},
+                              {1,  -1},
+                              {1,  0},
+                              {1,  1},
+                              {0,  1},
+                              {-1, 1},
+                              {-1, 0},
+                              {-1, -1}};
 
+    direction = new std::vector<Point> *[height];
 
-    if(puzzle[x][y] == -1){
-        std::cout << x << "  "<< y << std::endl;
-        std::cout << "random start point" << std::endl;
-        start_x = x;
-        start_y = y;
+    for (int i = 0; i < height; ++i) {
+        direction[i] = new std::vector<Point>[width];
+        for (int j = 0; j < width; ++j) {
+            Point p = {j, i};
+            if (puzzle[p] == -1) {
+                std::vector<Point> shuffled(dir);
+                std::shuffle(shuffled.begin(), shuffled.end(), std::mt19937(std::random_device()()));
+                direction[i][j].swap(shuffled);
+            }
+        }
     }
-    else {
-        std::cout << x << "  "<< y << std::endl;
-        std::cout << "start point assign again" << std::endl;
-        Init_start(puzzle);
-    } // 생성된 시작점이 0(벽) 일시 다시 실행
+}
+
+void Generator::init_map(const Puzzle &puzzle) {
+    map = new int[(height2) * (width2)];
+    for (int i = 0; i < height2; ++i) {
+        for (int j = 0; j < width2; ++j) {
+            map[i * (width2) + j] = puzzle[i - 1][j - 1];
+        }
+    }
+    map = map + width2 + 1;
+}
+
+void Generator::Init_startLoader(Puzzle &puzzle) {
+    std::vector<Point> EmptyCells;
+    for (int i = 0; i < height; ++i) {
+        for (int j = 0; j < width; ++j) {
+            Point p(j ,i);
+            if (GET(map, p) == -1) {
+                EmptyCells.emplace_back(p);
+            }
+        }
+    }
+    std::shuffle(EmptyCells.begin(), EmptyCells.end(), std::mt19937(std::random_device()()));
+    startLoader.swap(EmptyCells);
+}
+
+Puzzle &Generator::copy_map(Puzzle &puzzle) {
+    map = map - width2 - 1;
+    for (int i = 0; i < height2; ++i) {
+        for (int j = 0; j < width2; ++j) {
+            puzzle[i - 1][j - 1] = map[i * (width2) + j];
+        }
+    }
+    return puzzle;
+}
+
+Generator::~Generator() {
+    for (int i = 0; i < height; ++i) {
+        for (int j = 0; j < width; ++j) {
+            direction[i][j].clear();
+            std::vector<Point>().swap(direction[i][j]);
+        }
+        delete[] direction[i];
+    }
+    delete[] direction;
+
+    startLoader.clear();
+    std::vector<Point>().swap(startLoader);
+
+    delete[] map;
+}
 }
 
 Puzzle *Generator::Fill(Puzzle puzzle, CellGraph graph, const Cell cell) {
@@ -200,22 +263,3 @@ bool Generator::Update(Puzzle &puzzle, CellGraph &graph, const Cell cell) {
 
     return Update(puzzle, graph, *pCell);
 }
-
-void Generator::init_direction(const Puzzle &puzzle) {
-    std::vector<Point> dir = { {0, -1}, {1, -1}, {1, 0}, {1, 1}, {0, 1}, {-1, 1}, {-1, 0}, {-1, -1} };
-
-    direction = new std::vector<Point> *[height];
-
-    for (int i = 0; i < height; ++i) {
-        direction[i] = new std::vector<Point>[width];
-        for (int j = 0; j < width; ++j) {
-            Point p = {j, i};
-            if (puzzle[p] == -1) {
-                std::vector<Point> shuffled(dir);
-                std::shuffle(shuffled.begin(), shuffled.end(), std::mt19937(std::random_device()()));
-                direction[i][j] = shuffled;
-            }
-        }
-    }
-}
-

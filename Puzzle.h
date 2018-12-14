@@ -8,7 +8,7 @@
 #include <iostream>
 #include <fstream>
 
-class Point {
+struct Point {
 public:
     Point() = default;
 
