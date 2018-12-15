@@ -6,7 +6,6 @@
 #define HIDATO_SOLVER_H
 
 #include "Puzzle.h"
-#include <stack>
 #include <utility>
 
 class Solver {
@@ -16,5 +15,16 @@ public:
 	int direction[8][2] = { {0, -1}, {1, -1}, {1, 0}, {1, 1}, {0, 1}, {-1, 1}, {-1, 0}, {-1, -1} };
 };
 
+class Stack {
+public:
+	Stack();
+	int pop();
+	void push(int x, int y, int dir);
+	bool empty();
+
+private:
+	int s[1000];
+	int top;
+};
 
 #endif //HIDATO_SOLVER_H

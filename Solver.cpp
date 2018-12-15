@@ -4,6 +4,32 @@
 
 #include "Solver.h"
 #include <time.h>
+
+Stack::Stack() {
+	top = -1;
+	for (int i = 0; i < 1000; i++)
+		this->s[i] = 0;
+}
+
+int Stack::pop() {
+	if (empty()) {
+		return 0;
+	}
+	else {
+		return s[top--];
+	}
+}
+
+void Stack::push(int x, int y, int dir) {
+	s[++top] = x;
+	s[++top] = y;
+	s[++top] = dir;
+}
+
+bool Stack::empty() {
+	return (top == -1);
+}
+
 int Solver::hidato_solve(int num, const int goal, int position_x, int position_y, Puzzle& p) {
 	/***************************** Recursive *********************************************/
 	if (num == goal)
@@ -37,13 +63,14 @@ int Solver::hidato_solve(int num, const int goal, int position_x, int position_y
 	
 	/********************************** Stack **********************************************
 	Puzzle temp(p);
-	std::stack<int> s;
-	s.push(position_x); s.push(position_y); s.push(0);
+	// std::stack<int> s;
+	Stack s;
+	s.push(position_x, position_y,0);
 	int found = 0;
 	while (!s.empty() && !found) {
-		int dir = s.top(); s.pop();
-		int y = s.top(); s.pop();
-		int x = s.top(); s.pop();
+		int dir = s.pop();
+		int y = s.pop();
+		int x = s.pop();
 
 		while (dir < 8 && !found) {
 			int next_x = x + this->direction[dir][0];
@@ -56,13 +83,13 @@ int Solver::hidato_solve(int num, const int goal, int position_x, int position_y
 					 next_y >= 0 && next_y < p.getHeight() && 
 					 (p[next_y][next_x] == num + 1 || p[next_y][next_x] == 0)) {
 				if (p[next_y][next_x] == num + 1) {
-					s.push(x); s.push(y); s.push(++dir);
+					s.push(x, y, ++dir);
 					x = next_x; y = next_y; dir = 0;
 					++num;
 				}
 				else {
 					p[next_y][next_x] = ++num;
-					s.push(x); s.push(y); s.push(++dir);
+					s.push(x, y, ++dir); 
 					x = next_x; y = next_y; dir = 0;
 				}
 			}
