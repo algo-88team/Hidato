@@ -8,14 +8,14 @@
 #include <iostream>
 #include <fstream>
 
-class Point {
+struct Point {
 public:
     Point() = default;
 
     Point(int x, int y);
 
     Point operator+(Point p) {
-        return Point(x + p.x, y + p.y);
+        return {x + p.x, y + p.y};
     }
 
     bool operator==(const Point &rhs) const {
@@ -25,6 +25,10 @@ public:
 
     bool operator!=(const Point &rhs) const {
         return !(rhs == *this);
+    }
+
+    bool operator<(const Point &rhs) const {
+        return x == rhs.x ? y < rhs.y : x < rhs.x;
     }
 
     friend std::ostream &operator<<(std::ostream &o, const Point &p) {
