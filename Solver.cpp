@@ -59,43 +59,43 @@ int Solver::hidato_solve(int num, const int goal, int position_x, int position_y
 		}
 	}
 	return 0;
-
+	
 	/********************************** Stack **********************************************
 	Puzzle temp(p);
 	Stack s;
 	s.push(position_x, position_y, 0);
 	int found = 0;
 	while (!s.empty() && !found) {
-	int dir = s.pop();
-	int y = s.pop();
-	int x = s.pop();
+		int dir = s.pop();
+		int y = s.pop();
+		int x = s.pop();
 
-	while (dir < 8 && !found) {
-	int next_x = x + this->direction[dir][0];
-	int next_y = y + this->direction[dir][1];
+		while (dir < 8 && !found) {
+			int next_x = x + this->direction[dir][0];
+			int next_y = y + this->direction[dir][1];
 
-	if (num == goal)
-	found = 1;
+			if (num == goal)
+				found = 1;
 
-	else if (next_x >= 0 && next_x < p.getWidth() &&
-	next_y >= 0 && next_y < p.getHeight() &&
-	(p[next_y][next_x] == num + 1 || p[next_y][next_x] == -1)) {
-	if (p[next_y][next_x] == num + 1) { //다음 숫자 적혀있으면
-	s.push(x, y, ++dir);
-	x = next_x; y = next_y; dir = 0;
-	++num;
-	}
-	else {   //빈칸이면
-	p[next_y][next_x] = ++num;
-	s.push(x, y, ++dir);
-	x = next_x; y = next_y; dir = 0;
-	}
-	}
-	else
-	dir++;
-	}
-	p[y][x] = temp[y][x];
-	num--;
+			else if (next_x >= 0 && next_x < p.getWidth() &&
+				next_y >= 0 && next_y < p.getHeight() &&
+				(p[next_y][next_x] == num + 1 || p[next_y][next_x] == -1)) {
+				if (p[next_y][next_x] == num + 1) { // if the next number exists
+					s.push(x, y, ++dir);
+					x = next_x; y = next_y; dir = 0;
+					++num;
+				}
+				else {   // if blank
+					p[next_y][next_x] = ++num;
+					s.push(x, y, ++dir);
+					x = next_x; y = next_y; dir = 0;
+				}
+			}
+			else
+				dir++;
+		}
+		p[y][x] = temp[y][x];
+		num--;
 
 	}
 
