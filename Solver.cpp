@@ -39,11 +39,9 @@ int Solver::hidato_solve(int num, const int goal, int position_x, int position_y
 		int next_x = position_x + this->direction[i][0];
 		int next_y = position_y + this->direction[i][1];
 		if (next_x >= 0 && next_x < p.getWidth() && next_y >= 0 && next_y < p.getHeight() && p[next_y][next_x] == num + 1) {
-			if (p[next_y][next_x] == num + 1) {
-				if (hidato_solve(num + 1, goal, next_x, next_y, p))
-					return 1;
+			if (hidato_solve(num + 1, goal, next_x, next_y, p))
+				return 1;
 			}
-		}
 	}
 
 	for (int i = 0; i < 8; i++) {
