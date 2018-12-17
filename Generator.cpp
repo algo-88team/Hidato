@@ -302,6 +302,38 @@ Puzzle &Generator::GenerateWithCellGraph(Puzzle &puzzle) {
         std::cout << "Fill failed." << std::endl;
         return puzzle;
     }
+
+    init_cellLoader();
+
+    while(!cellLoader.empty()) {
+        Point pos = *cellLoader.begin();
+        cellLoader.erase(cellLoader.begin());
+        int value = puzzle[pos];
+        puzzle[pos] = -1;
+
+        int lower = 0;
+        int upper = numCells + 1;
+        Point lowerPoint{};
+        for (int i = 0; i < height; ++i) {
+            for (int j = 0; j < width; ++j) {
+                Point p(j, i);
+                int v = puzzle[p];
+                if (v < value) {
+                    if (v > lower) {
+                        lower = v;
+                        lowerPoint = p;
+                    }
+                } else if (v < upper) {
+                    upper = v;
+                }
+            }
+        }
+        if (is_UniquePath(lower, upper, lowerPoint) != 1) {
+            puzzle[pos] = value;
+        }
+    }
+
+    return puzzle;
 }
 
 Puzzle *Generator::Fill(Puzzle puzzle, CellGraph graph, const Cell cell) {
