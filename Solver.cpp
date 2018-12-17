@@ -59,7 +59,7 @@ int Solver::hidato_solve(int num, const int goal, int position_x, int position_y
 		}
 	}
 	return 0;
-	
+
 	/********************************** Stack **********************************************
 	Puzzle temp(p);
 	Stack s;
@@ -103,7 +103,20 @@ int Solver::hidato_solve(int num, const int goal, int position_x, int position_y
 	*/
 }
 
-Puzzle &Solver::Solve(Puzzle &p) {
+int Solver::Answer_checking(Puzzle &p, Puzzle& answer) {
+	for (int i = 0; i < answer.getHeight(); i++) {
+		for (int j = 0; j < answer.getWidth(); j++) {
+			if (p[i][j] != answer[i][j]) {
+				std::cout << "Not correct" << std::endl;
+				return 0;
+			}
+		}
+	}
+	std::cout << "Correct" << std::endl;
+	return 0;
+}
+
+Puzzle &Solver::Solve(Puzzle &p, Puzzle& answer) {
 	// TODO
 	int goal = -1;
 	int position_x = 0, position_y = 0;
@@ -130,8 +143,8 @@ Puzzle &Solver::Solve(Puzzle &p) {
 	hidato_solve(1, goal, position_x, position_y, p);
 	clock_t end = clock();
 	long msec1 = end - begin;
-	std::cout << msec1 * 0.001 << " ÃÊ" << "\n";
+	std::cout << msec1 * 0.001 << " sec" << "\n";
 
-
+	Answer_checking(p, answer);
 	return p;
 }

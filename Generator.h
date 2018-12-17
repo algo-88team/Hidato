@@ -11,46 +11,46 @@
 
 class Generator {
 public:
-    Generator() : width(0), height(0), numCells(0) {}
-    Puzzle &Generate(Puzzle &puzzle);
-    Puzzle &GenerateWithCellGraph(Puzzle &puzzle);
+	Generator() : width(0), height(0), numCells(0) {}
+	Puzzle &Generate(Puzzle &puzzle, Puzzle& answer);
+	Puzzle &GenerateWithCellGraph(Puzzle &puzzle);
 
-    virtual ~Generator();
+	virtual ~Generator();
 
 private:
-    int width;
-    int height;
-    int width2;
-    int height2;
-    int numCells;
+	int width;
+	int height;
+	int width2;
+	int height2;
+	int numCells;
 
-    int *map;
+	int *map;
 
-    std::vector<Point> startLoader;
-    std::vector<Point> cellLoader;
-    std::vector<Point> **direction;
+	std::vector<Point> startLoader;
+	std::vector<Point> cellLoader;
+	std::vector<Point> **direction;
 
-    void init_direction(const Puzzle &puzzle);
+	void init_direction(const Puzzle &puzzle);
 
-    void init_map(const Puzzle &puzzle);
+	void init_map(const Puzzle &puzzle);
 
-    void Init_startLoader();
+	void Init_startLoader();
 
-    void init_cellLoader();
+	void init_cellLoader();
 
-    bool Recursive(Puzzle &puzzle, Point pos, int n);
+	bool Recursive(Puzzle &puzzle, Point pos, int n);
 
-    bool Recursive(Point pos, int n);
+	bool Recursive(Point pos, int n);
 
-    Puzzle &copy_map(Puzzle &puzzle, bool stay = false);
+	Puzzle &copy_map(Puzzle &puzzle, bool stay = false);
 
-    void Invert(Puzzle &puzzle);
+	void Invert(Puzzle &puzzle);
 
-    int is_UniquePath(int num, const int goal, Point pos);
+	int is_UniquePath(int num, const int goal, Point pos);
 
-    Puzzle *Fill(Puzzle puzzle, CellGraph graph, const Cell cell);
+	Puzzle *Fill(Puzzle puzzle, CellGraph graph, const Cell cell);
 
-    bool Update(Puzzle &puzzle, CellGraph &graph, const Cell cell);
+	bool Update(Puzzle &puzzle, CellGraph &graph, const Cell cell);
 };
 
 

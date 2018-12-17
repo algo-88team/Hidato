@@ -7,28 +7,39 @@
 #include "Puzzle.h"
 #include "Generator.h"
 #include "Solver.h"
+#include <string>
 
 #define RANDOM_SEED (time(nullptr))
 
 int main() {
-    Puzzle puzzle;
-    Generator generator;
-    Solver solver;
 
-    srand(static_cast<unsigned int>(RANDOM_SEED));
 
-    puzzle.LoadFormFile("input.txt");
 
-    std::cout << "Input puzzle" << std::endl;
-    std::cout << puzzle << std::endl;
+	Generator generator;
+	Solver solver;
 
-    std::cout << "Generated puzzle" << std::endl;
-    std::cout << generator.Generate(puzzle) << std::endl;
+	srand(static_cast<unsigned int>(RANDOM_SEED));
 
-    std::cout << "Solved puzzle" << std::endl;
-    std::cout << solver.Solve(puzzle) << std::endl;
+	for (int i = 0; i < 5; i++) {
+		Puzzle puzzle, answer;
 
-    std::getchar();
+		std::string s = "input" + std::to_string(i) + ".txt";
+		const char* c = s.c_str();
+		std::cout << "--------------------- testcase " << i + 1 << " ---------------------" << std::endl;
 
-    return 0;
+		puzzle.LoadFormFile(c);
+
+		std::cout << "Input puzzle" << std::endl;
+		std::cout << puzzle << std::endl;
+
+		std::cout << "Generated puzzle" << std::endl;
+		std::cout << generator.Generate(puzzle, answer) << std::endl;
+
+		std::cout << "Solved puzzle" << std::endl;
+		std::cout << solver.Solve(puzzle, answer) << std::endl;
+
+	}
+	std::getchar();
+
+	return 0;
 }
