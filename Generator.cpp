@@ -95,24 +95,6 @@ Puzzle &Generator::Generate(Puzzle &puzzle) {
     return puzzle;
 }
 
-bool Generator::Recursive(Puzzle &puzzle, Point pos, int n) {
-    if (n > puzzle.getNumEmptyCells()) {
-        return true;
-    }
-    if (puzzle[pos] != -1) {
-        return false;
-    }
-    puzzle[pos] = n;
-    std::vector<Point> &dir = direction[pos.y][pos.x];
-    for (int i = 0; i < 8; ++i) {
-        if (Recursive(puzzle, pos + dir[i], n + 1)) {
-            return true;
-        }
-    }
-    puzzle[pos] = -1;
-    return false;
-}
-
 bool Generator::Recursive(Point pos, int n) {
     if (n > numCells) {
         return true;
@@ -261,8 +243,8 @@ Puzzle &Generator::GenerateWithCellGraph(Puzzle &puzzle) {
     //  Change empty cells from 1 to -1
     Invert(puzzle);
 
-    //  Init map
-    init_map(puzzle);
+    //  Init random direction
+    init_direction(puzzle);
 
     //  Create CellGraph
     CellGraph graph(puzzle);
@@ -303,21 +285,25 @@ Puzzle &Generator::GenerateWithCellGraph(Puzzle &puzzle) {
         return puzzle;
     }
 
+    //  Init map
+    init_map(puzzle);
+
+    //  Init cellLoader
     init_cellLoader();
 
     while(!cellLoader.empty()) {
         Point pos = *cellLoader.begin();
         cellLoader.erase(cellLoader.begin());
-        int value = puzzle[pos];
-        puzzle[pos] = -1;
+        int value = GET(map, pos);
+        GET(map, pos) = -1;
 
         int lower = 0;
         int upper = numCells + 1;
-        Point lowerPoint{};
+        Point lowerPoint;
         for (int i = 0; i < height; ++i) {
             for (int j = 0; j < width; ++j) {
                 Point p(j, i);
-                int v = puzzle[p];
+                int v = GET(map, p);
                 if (v < value) {
                     if (v > lower) {
                         lower = v;
@@ -329,10 +315,11 @@ Puzzle &Generator::GenerateWithCellGraph(Puzzle &puzzle) {
             }
         }
         if (is_UniquePath(lower, upper, lowerPoint) != 1) {
-            puzzle[pos] = value;
+            GET(map, pos) = value;
         }
     }
 
+    copy_map(puzzle);
     return puzzle;
 }
 
