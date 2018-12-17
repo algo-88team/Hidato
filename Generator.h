@@ -38,9 +38,8 @@ private:
 
 	void init_cellLoader();
 
-	bool Recursive(Puzzle &puzzle, Point pos, int n);
 
-	bool Recursive(Point pos, int n);
+    bool Recursive(Point pos, int n);
 
 	Puzzle &copy_map(Puzzle &puzzle, bool stay = false);
 

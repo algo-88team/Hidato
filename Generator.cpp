@@ -96,24 +96,6 @@ Puzzle &Generator::Generate(Puzzle &puzzle, Puzzle& answer) {
 	return puzzle;
 }
 
-bool Generator::Recursive(Puzzle &puzzle, Point pos, int n) {
-	if (n > puzzle.getNumEmptyCells()) {
-		return true;
-	}
-	if (puzzle[pos] != -1) {
-		return false;
-	}
-	puzzle[pos] = n;
-	std::vector<Point> &dir = direction[pos.y][pos.x];
-	for (int i = 0; i < 8; ++i) {
-		if (Recursive(puzzle, pos + dir[i], n + 1)) {
-			return true;
-		}
-	}
-	puzzle[pos] = -1;
-	return false;
-}
-
 bool Generator::Recursive(Point pos, int n) {
 	if (n > numCells) {
 		return true;
@@ -253,56 +235,93 @@ int Generator::is_UniquePath(int num, const int goal, Point pos) {
 }
 
 Puzzle &Generator::GenerateWithCellGraph(Puzzle &puzzle) {
-	width = puzzle.getWidth();
-	height = puzzle.getHeight();
-	width2 = width + 2;
-	height2 = height + 2;
-	numCells = puzzle.getNumCells();
+    width = puzzle.getWidth();
+    height = puzzle.getHeight();
+    width2 = width + 2;
+    height2 = height + 2;
+    numCells = puzzle.getNumCells();
 
-	//  Change empty cells from 1 to -1
-	Invert(puzzle);
+    //  Change empty cells from 1 to -1
+    Invert(puzzle);
 
-	//  Init map
-	init_map(puzzle);
+    //  Init random direction
+    init_direction(puzzle);
 
-	//  Create CellGraph
-	CellGraph graph(puzzle);
+    //  Create CellGraph
+    CellGraph graph(puzzle);
 
-	//  Fill puzzle
-	Puzzle *result;
-	do {
-		Cell *randCell = graph.getRandCell(1);
-		if (randCell == nullptr) {
-			std::cout << "There are no way" << std::endl;
-			return puzzle;
-		}
-		randCell->setData(1);
+    //  Fill puzzle
+    Puzzle *result;
+    do {
+        Cell *randCell = graph.getRandCell(1);
+        if (randCell == nullptr) {
+            std::cout << "There are no way" << std::endl;
+            return puzzle;
+        }
+        randCell->setData(1);
 
-		result = Fill(puzzle, graph, *randCell);
+        result = Fill(puzzle, graph, *randCell);
 
-		if (result == nullptr) {
-			randCell->eraseCandidate(1);
-			graph.eraseRemainder(1, randCell);
-			randCell->setData(-1);
-		}
-	} while (result == nullptr);
+        if (result == nullptr) {
+            randCell->eraseCandidate(1);
+            graph.eraseRemainder(1, randCell);
+            randCell->setData(-1);
+        }
+    } while (result == nullptr);
 
-	puzzle = *result;
+    puzzle = *result;
 
-	//  Check puzzle
-	int checker = 0;
-	for (int i = 0; i < height; ++i) {
-		for (int j = 0; j < width; ++j) {
-			checker ^= puzzle[i][j];
-		}
-	}
-	for (int n = 1; n < numCells + 1; ++n) {
-		checker ^= n;
-	}
-	if (checker) {
-		std::cout << "Fill failed." << std::endl;
-		return puzzle;
-	}
+    //  Check puzzle
+    int checker = 0;
+    for (int i = 0; i < height; ++i) {
+        for (int j = 0; j < width; ++j) {
+            checker ^= puzzle[i][j];
+        }
+    }
+    for (int n = 1; n < numCells + 1; ++n) {
+        checker ^= n;
+    }
+    if (checker) {
+        std::cout << "Fill failed." << std::endl;
+        return puzzle;
+    }
+
+    //  Init map
+    init_map(puzzle);
+
+    //  Init cellLoader
+    init_cellLoader();
+
+    while(!cellLoader.empty()) {
+        Point pos = *cellLoader.begin();
+        cellLoader.erase(cellLoader.begin());
+        int value = GET(map, pos);
+        GET(map, pos) = -1;
+
+        int lower = 0;
+        int upper = numCells + 1;
+        Point lowerPoint;
+        for (int i = 0; i < height; ++i) {
+            for (int j = 0; j < width; ++j) {
+                Point p(j, i);
+                int v = GET(map, p);
+                if (v < value) {
+                    if (v > lower) {
+                        lower = v;
+                        lowerPoint = p;
+                    }
+                } else if (v < upper) {
+                    upper = v;
+                }
+            }
+        }
+        if (is_UniquePath(lower, upper, lowerPoint) != 1) {
+            GET(map, pos) = value;
+        }
+    }
+
+    copy_map(puzzle);
+    return puzzle;
 }
 
 Puzzle *Generator::Fill(Puzzle puzzle, CellGraph graph, const Cell cell) {
