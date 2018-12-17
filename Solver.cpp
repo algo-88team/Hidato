@@ -38,7 +38,7 @@ int Solver::hidato_solve(int num, const int goal, int position_x, int position_y
 	for (int i = 0; i < 8; i++) {
 		int next_x = position_x + this->direction[i][0];
 		int next_y = position_y + this->direction[i][1];
-		if (next_x >= 0 && next_x < p.getWidth() && next_y >= 0 && next_y < p.getHeight() && p[next_y][next_x] == num + 1) {
+		if (p[next_y][next_x] == num + 1) {
 			if (hidato_solve(num + 1, goal, next_x, next_y, p))
 				return 1;
 		}
@@ -48,7 +48,7 @@ int Solver::hidato_solve(int num, const int goal, int position_x, int position_y
 		int next_x = position_x + this->direction[i][0];
 		int next_y = position_y + this->direction[i][1];
 
-		if (next_x >= 0 && next_x < p.getWidth() && next_y >= 0 && next_y < p.getHeight() && p[next_y][next_x] == -1) {
+		if (p[next_y][next_x] == -1) {
 
 			p[next_y][next_x] = num + 1;
 
@@ -61,7 +61,7 @@ int Solver::hidato_solve(int num, const int goal, int position_x, int position_y
 	return 0;
 
 	/********************************** Stack **********************************************
-	Puzzle temp(p);
+		Puzzle temp(p);
 	Stack s;
 	s.push(position_x, position_y, 0);
 	int found = 0;
@@ -77,9 +77,7 @@ int Solver::hidato_solve(int num, const int goal, int position_x, int position_y
 			if (num == goal)
 				found = 1;
 
-			else if (next_x >= 0 && next_x < p.getWidth() &&
-				next_y >= 0 && next_y < p.getHeight() &&
-				(p[next_y][next_x] == num + 1 || p[next_y][next_x] == -1)) {
+			else if (p[next_y][next_x] == num + 1 || p[next_y][next_x] == -1) {
 				if (p[next_y][next_x] == num + 1) { // if the next number exists
 					s.push(x, y, ++dir);
 					x = next_x; y = next_y; dir = 0;
